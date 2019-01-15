@@ -7,21 +7,17 @@ public class ContextKeep {
 
     private static ContextKeep mInstance;
 
-    private ContextKeep() {
-
+    private ContextKeep(Context context) {
+        this.context = context;
     }
 
-    public static synchronized ContextKeep getInstance() {
+    public static synchronized ContextKeep init(Context context) {
         if (mInstance == null)
-            mInstance = new ContextKeep();
+            mInstance = new ContextKeep(context);
         return mInstance;
     }
 
     public static Context getContext() {
-        return getInstance().context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
+        return mInstance.context;
     }
 }

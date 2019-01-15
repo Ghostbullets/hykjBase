@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.hykj.base.utils.ContextKeep;
+import com.hykj.base.utils.text.Tip;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,6 +26,14 @@ public class SPUtils {
         sp = ContextKeep.getContext().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
     }
 
+    public static boolean isInit() {
+        if (spUtils == null) {
+            Tip.showShort("请先在Application中初始化SPUtils类");
+            return false;
+        }
+        return true;
+    }
+
     public static SPUtils init() {
         if (spUtils == null) {
             synchronized (SPUtils.class) {
@@ -43,6 +52,8 @@ public class SPUtils {
      * @param obj 属性值
      */
     public static void put(String key, Object obj) {
+        if (!isInit())
+            return;
         SharedPreferences.Editor editor = sp.edit();
         if (obj instanceof String) {
             editor.putString(key, (String) obj);
@@ -68,6 +79,8 @@ public class SPUtils {
      * @return 得到属性值
      */
     public static Object get(String key, Object defaultValues) {
+        if (!isInit())
+            return null;
         if (defaultValues != null) {
             if (defaultValues instanceof String) {
                 return sp.getString(key, (String) defaultValues);
@@ -94,6 +107,8 @@ public class SPUtils {
      * @param key
      */
     public static void remove(String key) {
+        if (!isInit())
+            return;
         SharedPreferencesCommap.apply(sp.edit().remove(key));
     }
 
@@ -101,6 +116,8 @@ public class SPUtils {
      * 清空存储的所有值
      */
     public static void clear() {
+        if (!isInit())
+            return;
         SharedPreferencesCommap.apply(sp.edit().clear());
     }
 
@@ -109,6 +126,8 @@ public class SPUtils {
      * @return 判断该key是否有存储在sp中
      */
     public static boolean contains(String key) {
+        if (!isInit())
+            return false;
         return sp.contains(key);
     }
 
@@ -116,6 +135,8 @@ public class SPUtils {
      * @return 返回所有的键值对
      */
     public static Map<String, ?> getAll() {
+        if (!isInit())
+            return null;
         return sp.getAll();
     }
 
