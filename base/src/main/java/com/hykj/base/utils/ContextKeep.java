@@ -18,6 +18,8 @@ public class ContextKeep {
     }
 
     public static Context getContext() {
+        if (mInstance == null)
+            throw new RuntimeException("请先初始化ContextKeep类");
         return mInstance.context;
     }
 }
