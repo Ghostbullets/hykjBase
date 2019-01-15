@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="textSize" format="dimension" />
+    <attr name="textColor" format="color" />
+    <declare-styleable name="CustomEmptyView">
+        <attr name="textColor" />
+        <attr name="textSize" />
+        <attr name="text" format="string" />
+        <attr name="netWorkErrorText" format="string" />
+        <attr name="emptyIcon" format="reference" />
+    </declare-styleable>
+    
+    <declare-styleable name="AvatarView">
+        <attr name="shapeType" format="enum">
+            <enum name="circle" value="0" />
+            <enum name="round" value="1" />
+            <enum name="corner" value="2" />
+        </attr>
+        <attr name="radiusLeftBottom" format="dimension" />
+        <attr name="radiusLeftTop" format="dimension" />
+        <attr name="radiusRightTop" format="dimension" />
+        <attr name="radiusRightBottom" format="dimension" />
+        <attr name="radius" format="dimension" />
+        <attr name="borderWidth" format="dimension" />
+        <attr name="borderColor" format="color" />
+    </declare-styleable>
+</resources>
