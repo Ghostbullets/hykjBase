@@ -1,12 +1,14 @@
 package com.hykj.base.base;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -16,6 +18,7 @@ public abstract class BaseActivity extends FragmentActivity {
     protected boolean isCreated = false;
     protected BaseActivity mActivity;
     protected ProgressBarDialog mHub;
+    protected ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +36,32 @@ public abstract class BaseActivity extends FragmentActivity {
         isCreated=true;
         //初始化内容
         onCreateSub();
+    }
+
+    public void showProDialog() {
+        showProDialog(null);
+    }
+    public void showProDialog(boolean cancelable) {
+        showProDialog(cancelable,null);
+    }
+    public void showProDialog(String msg) {
+        showProDialog(false,msg);
+    }
+    public void showProDialog(boolean cancelable,String msg) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            if (!TextUtils.isEmpty(msg)){
+                progressDialog.setMessage(msg);
+            }
+            progressDialog.setCancelable(cancelable);
+            progressDialog.show();
+        }
+    }
+    public void dismissProDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
     }
 
     /**

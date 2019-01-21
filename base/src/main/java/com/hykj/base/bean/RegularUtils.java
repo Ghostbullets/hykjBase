@@ -3,7 +3,7 @@ package com.hykj.base.bean;
 import android.text.TextUtils;
 
 /**
- *正则表达式
+ * 正则表达式
  */
 public class RegularUtils {
 
@@ -22,5 +22,26 @@ public class RegularUtils {
          */
         String telRegex = "^((13[0-9])|(14[5,7,9])|(15[^4])|(18[0-9])|(17[0,1,3,5-8])|166|198|199)\\d{8}$";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
         return !TextUtils.isEmpty(mobiles) && mobiles.matches(telRegex);
+    }
+
+    /**
+     * 十八位：^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$
+     * 十五位：^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}$
+     *
+     * @param card
+     * @return
+     */
+    public static boolean isCard(String card) {
+
+        //比下面的多了年份的前两位，是1800-3900年
+        String eighteenRegex = "(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)";
+        //第一位是1-9中的任意一位
+        //第二-第6位为0-9中的任意一位
+        //第7,8位是年份的后两位
+        //第9,10位是月份，可以是00--09，以及10,11,12这些
+        //第11-12位是天数，可以是0-9,10,11-19,20,21-29,30,31
+        //最后3位是三位顺序码
+        String fifteenRegex = "(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)";
+        return !TextUtils.isEmpty(card) && (card.matches(eighteenRegex) || card.matches(fifteenRegex));
     }
 }
