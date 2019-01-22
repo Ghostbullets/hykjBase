@@ -3,20 +3,19 @@ package com.hykj.base.view.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.hykj.base.R;
 import com.hykj.base.base.BaseActivity;
 import com.hykj.base.dialog.BottomListMenuDialog;
 import com.hykj.base.dialog.CommonDialog;
-import com.hykj.base.dialog.ShowPermissionDialog;
 import com.hykj.base.dialog.json.MenuGroup;
 import com.hykj.base.dialog.json.MenuItem;
 import com.hykj.base.utils.ContextKeep;
@@ -50,6 +49,10 @@ public class PickerImageActivity extends BaseActivity {
     @Override
     protected void init() {
         outPath = getIntent().getStringExtra(OUT_PATH);
+        if (checkTransStatus()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
 
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.addMenu(new MenuItem("拍照", PhotoType.FROM_CAMERA));
