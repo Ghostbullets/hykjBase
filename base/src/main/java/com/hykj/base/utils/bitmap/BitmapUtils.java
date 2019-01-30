@@ -19,8 +19,6 @@ import android.view.View;
 import com.hykj.base.utils.ContextKeep;
 import com.hykj.base.utils.storage.FileUtil;
 
-import java.io.FileNotFoundException;
-
 /**
  * 存取头像工具类---以文件形式存放
  * Created by Administrator on 2018/1/24.
@@ -158,6 +156,8 @@ public class BitmapUtils {
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         Bitmap scaleBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+        if (!bitmap.equals(scaleBitmap) && !bitmap.isRecycled())
+            bitmap.recycle();
         return new BitmapDrawable(ContextKeep.getContext().getResources(), scaleBitmap);
     }
 
@@ -169,7 +169,7 @@ public class BitmapUtils {
     }
 
 
-    @Deprecated
+
     public static Bitmap getScreenCapture(Activity activity) {
         //找到当前页面的跟布局
         View decorView = activity.getWindow().getDecorView();
@@ -178,7 +178,7 @@ public class BitmapUtils {
         //启用DrawingCache并创建位图
         decorView.buildDrawingCache();
         //从缓存中获取当前屏幕的图片
-        Bitmap cache = decorView.getDrawingCache();
+        Bitmap cache = Bitmap.createBitmap(decorView.getDrawingCache());
         //禁用DrawingCahce否则会影响性能
         decorView.setDrawingCacheEnabled(false);
         return cache;
@@ -225,13 +225,13 @@ public class BitmapUtils {
         Matrix matrix = new Matrix();
         matrix.postScale(sx, sy);
         Bitmap scaleBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-        if (!bitmap.equals(scaleBitmap))
+        if (!bitmap.equals(scaleBitmap) && !bitmap.isRecycled())
             bitmap.recycle();
         return scaleBitmap;
     }
 
     /**
-     * 保存图片到本地，并且插入到相册中
+     * 保存图片到本地，并且插入到相册中,需要读写存储权限
      *
      * @param bitmap     图像资源
      * @param fileName   要保存的文件名
@@ -242,12 +242,14 @@ public class BitmapUtils {
         try {
             if (!TextUtils.isEmpty(filePath)) {
                 String result = MediaStore.Images.Media.insertImage(ContextKeep.getContext().getContentResolver(), filePath, fileName, null);
-                ContextKeep.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse(result)));
-                if (isRecycled && !bitmap.isRecycled())
-                    bitmap.recycle();
-                return true;
+                if (!TextUtils.isEmpty(result)) {
+                    ContextKeep.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse(result)));
+                    if (isRecycled && !bitmap.isRecycled())
+                        bitmap.recycle();
+                    return true;
+                }
             }
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;

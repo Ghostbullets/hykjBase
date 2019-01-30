@@ -3,13 +3,18 @@ package com.hykj.base.view.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.hykj.base.R;
@@ -19,11 +24,16 @@ import com.hykj.base.dialog.CommonDialog;
 import com.hykj.base.dialog.json.MenuGroup;
 import com.hykj.base.dialog.json.MenuItem;
 import com.hykj.base.utils.ContextKeep;
+import com.hykj.base.utils.DateUtils;
 import com.hykj.base.utils.auth.FileProviderUtils;
 import com.hykj.base.utils.storage.FileUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -32,12 +42,16 @@ import io.reactivex.functions.Consumer;
  * 选择相册、拍摄
  */
 public class PickerImageActivity extends BaseActivity {
-    public static final int REQ_ALBUM = 1000; // 相册
-    public static final int REQ_CAMERA = 1001;// 拍照
+    private static final int REQ_ALBUM = 1000; // 相册
+    private static final int REQ_CAMERA = 1001;// 拍照
+    private static final int REQ_CROP = 1002;//裁剪
 
     public static final String OUT_PATH = "outPath";
+    private static final String IS_CROP = "isCrop";
 
-    private String outPath;//拍摄的照片输出目录，当选择拍摄时必传，并且返回的也是该值
+    private String outPath;//拍摄的照片输出路径，当选择拍摄时必传，并且返回的也是该值
+    private File outFile;
+    private boolean isCrop;//是否需要裁剪
 
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -49,6 +63,7 @@ public class PickerImageActivity extends BaseActivity {
     @Override
     protected void init() {
         outPath = getIntent().getStringExtra(OUT_PATH);
+        isCrop = getIntent().getBooleanExtra(IS_CROP, false);
         if (checkTransStatus()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -68,10 +83,10 @@ public class PickerImageActivity extends BaseActivity {
                 @PhotoType int type = (int) item.getTag();
                 switch (type) {
                     case PhotoType.FROM_CAMERA:
-                        initPic(REQ_CAMERA);
+                        initPic();
                         break;
                     case PhotoType.FROM_LOCAL:
-                        initChoose(REQ_ALBUM);
+                        initChoose();
                         break;
                 }
             }
@@ -79,14 +94,15 @@ public class PickerImageActivity extends BaseActivity {
     }
 
     //打开相机
-    public void initPic(final int requestCode) {
-        disposable.add(new RxPermissions(mActivity).request(Manifest.permission.CAMERA)
+    public void initPic() {
+        disposable.add(new RxPermissions(mActivity).request(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean) {
                             // 拍照
-                            FileProviderUtils.startOpenCamera(mActivity, requestCode, new File(outPath));
+                            checkOutPath();
+                            FileProviderUtils.startOpenCamera(mActivity, REQ_CAMERA, outFile);
                         } else {
                             new CommonDialog().setData("提示", "需要获取相机权限用于拍摄凭证", "去设置", "取消").setListener(new CommonDialog.OnSelectClickListener() {
                                 @Override
@@ -106,13 +122,13 @@ public class PickerImageActivity extends BaseActivity {
     }
 
     //打开相册
-    public void initChoose(final int requestCode) {
+    public void initChoose() {
         disposable.add(new RxPermissions(mActivity).request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean) {
-                            FileProviderUtils.startOpenAlbum(mActivity, requestCode, FileProviderUtils.ImageType.ALL);
+                            FileProviderUtils.startOpenAlbum(mActivity, REQ_ALBUM, FileProviderUtils.ImageType.ALL);
                         } else {
                             new CommonDialog().setData("提示", "需要获取存储权限用户选择凭证", "去设置", "取消").setListener(new CommonDialog.OnSelectClickListener() {
                                 @Override
@@ -136,25 +152,51 @@ public class PickerImageActivity extends BaseActivity {
         Intent localIntent = new Intent();
         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         localIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        localIntent.setData(Uri.fromParts("package", ContextKeep.getContext().getPackageName(), null));
+        localIntent.setData(Uri.fromParts("package", getPackageName(), null));
         startActivity(localIntent);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_CAMERA) {
+        if (requestCode == REQ_CAMERA) {//拍照
+            if (resultCode == RESULT_OK) {
+                if (isCrop)
+                    FileProviderUtils.startCropPicture(mActivity, REQ_CROP, outFile, outFile);
+                else
+                    setResultData();
+            }
+            if (!isCrop)
+                finish();
+        } else if (requestCode == REQ_ALBUM) {//相册选取
+            if (resultCode == RESULT_OK && data != null) {
+                if (isCrop) {
+                    checkOutPath();
+                    FileProviderUtils.startCropPicture(mActivity, REQ_CROP, data.getData(), FileProviderUtils.getUriForFile(mActivity, outFile, true));
+                } else {
+                    outPath = FileUtil.getImageFilePath(data.getData());//根据Uri获取图片本地路径
+                    setResultData();
+                }
+            }
+            if (!isCrop)
+                finish();
+        } else if (requestCode == REQ_CROP) {//裁剪
             if (resultCode == RESULT_OK) {
                 setResultData();
             }
             finish();
-        } else if (requestCode == REQ_ALBUM) {
-            if (resultCode == RESULT_OK && data != null) {
-                outPath = FileUtil.getImageFilePath(data.getData());//根据Uri获取图片本地路径
-                setResultData();
-            }
-            finish();
         }
+    }
+
+    //判断outPath是否为空，为空则设置路径
+    private void checkOutPath() {
+        File dir = FileUtil.isExternalStorageWritable() ? getExternalCacheDir() : getCacheDir();
+        if (TextUtils.isEmpty(outPath)) {
+            if (dir != null) {
+                outPath = dir.getAbsolutePath() + "/" + DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + ".png";
+            }
+        }
+        outFile = FileUtil.createNewFile(outPath);
     }
 
     //设置回调数据
@@ -171,22 +213,33 @@ public class PickerImageActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    public static void start(Activity activity, int requestCode, String outPath) {
+        start(activity, requestCode, outPath, false);
+    }
+
     /**
      * 开启画面
      *
      * @param activity    活动
      * @param requestCode 请求码
-     * @param outPath     拍摄的照片的输出目录
+     * @param outPath     拍摄、裁剪的照片的输出目录
+     * @param isCrop      是否裁剪
      */
-    public static void start(Activity activity, int requestCode, String outPath) {
+    public static void start(Activity activity, int requestCode, String outPath, boolean isCrop) {
         Intent intent = new Intent(activity, PickerImageActivity.class);
         intent.putExtra(OUT_PATH, outPath);
+        intent.putExtra(IS_CROP, isCrop);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void start(Fragment fragment, int requestCode, String outPath) {
+        start(fragment, requestCode, outPath, false);
+    }
+
+    public static void start(Fragment fragment, int requestCode, String outPath, boolean isCrop) {
         Intent intent = new Intent(fragment.getContext(), PickerImageActivity.class);
         intent.putExtra(OUT_PATH, outPath);
+        intent.putExtra(IS_CROP, isCrop);
         fragment.startActivityForResult(intent, requestCode);
     }
 

@@ -76,20 +76,25 @@ public class FileUtil {
      * 根据文件名、文件夹类型创建文件
      *
      * @param fileName 文件名
+     * @param fileType 文件类型
      * @return
      */
     public static File createNewFile(String fileName, @FileType String fileType) {
-        File file = new File(getCacheFilePath(fileType, fileName));
-        if (file.exists())
-            return file;
-        try {
-            if (file.createNewFile()) {
-                return file;
+        return createNewFile(getCacheFilePath(fileType, fileName));
+    }
+
+    public static File createNewFile(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    throw new RuntimeException("创建文件失败");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
+        return file;
     }
 
     public static File getTempFile(@FileType String type) {

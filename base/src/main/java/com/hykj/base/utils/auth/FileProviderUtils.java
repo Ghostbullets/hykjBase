@@ -3,6 +3,7 @@ package com.hykj.base.utils.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -69,11 +70,62 @@ public class FileProviderUtils {
     }
 
     /**
+     * 裁剪图片
+     *
+     * @param activity    活动
+     * @param requestCode 请求码
+     * @param sourceFile  从该文件夹拿取图片去裁剪
+     * @param targetFile  裁剪的图片存储文件
+     */
+    public static void startCropPicture(Activity activity, int requestCode, File sourceFile, File targetFile) {
+        activity.startActivityForResult(getCropIntent(getUriForFile(activity, sourceFile), getUriForFile(activity, targetFile, true)), requestCode);
+    }
+
+    public static void startCropPicture(Activity activity, int requestCode, Uri sourceUri, Uri targetUri) {
+        activity.startActivityForResult(getCropIntent(sourceUri, targetUri), requestCode);
+    }
+
+    public static void startCropPicture(Fragment fragment, int requestCode, File sourceFile, File targetFile) {
+        fragment.startActivityForResult(getCropIntent(getUriForFile(fragment.getContext(), sourceFile), getUriForFile(fragment.getContext(), targetFile, true)), requestCode);
+    }
+
+    public static void startCropPicture(Fragment fragment, int requestCode, Uri sourceUri, Uri targetUri) {
+        fragment.startActivityForResult(getCropIntent(sourceUri, targetUri), requestCode);
+    }
+
+    private static Intent getCropIntent(Uri sourceUri, Uri targetUri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.setDataAndType(sourceUri, "image/*");
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高方向上的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 200);
+        intent.putExtra("outputY", 200);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+        //输出格式，一般设为Bitmap格式：Bitmap.CompressFormat.JPEG.toString()
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+        return intent;
+    }
+
+    /**
      * @param context
      * @param file
      * @return
      */
-    private static Uri getUriForFile(Context context, File file) {
+    public static Uri getUriForFile(Context context, File file) {
+        return getUriForFile(context, file, false);
+    }
+
+    /**
+     * @param context       上下文
+     * @param file          文件
+     * @param isNotProvider 是否不需要经过provider
+     * @return
+     */
+    public static Uri getUriForFile(Context context, File file, boolean isNotProvider) {
         if (context == null || file == null)
             throw new NullPointerException();
         if (!file.exists()) {
@@ -87,7 +139,7 @@ public class FileProviderUtils {
             }
         }
         //生成的Uri路径格式为file://xxx,无法在App之间共享的，我们需要生成content://xxx类型的Uri，方法就是通过FileProvider.getUriForFile来实现：
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !isNotProvider) {
             return FileProvider.getUriForFile(context, context.getPackageName() + ".FileProvider", file);
         } else {
             return Uri.fromFile(file);

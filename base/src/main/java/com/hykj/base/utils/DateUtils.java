@@ -1,11 +1,14 @@
 package com.hykj.base.utils;
 
 import android.support.annotation.IntDef;
+import android.text.TextUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -284,5 +287,74 @@ public class DateUtils {
     public static String parseStoreTimeStamp(long timeStamp) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
         return dateFormat.format(new Date(timeStamp));
+    }
+
+    /**
+     * 获取一段时间的字符串时间组
+     *
+     * @param startTime 起始时间 格式yyyy-MM-dd   2018-08-01
+     * @param endTime   结束时间  格式yyyy-MM-dd   2019-06-01
+     * @param type      类型
+     * @return
+     */
+    public static List<String> getDistanceDates(String startTime, String endTime, @DistanceDateType int type) {
+        if (TextUtils.isEmpty(startTime) || TextUtils.isEmpty(endTime)) {
+            throw new RuntimeException("起始时间、结束时间不能为空");
+        }
+        String[] splitStart = startTime.split("-");
+        String[] splitEnd = endTime.split("-");
+        if (splitStart.length < 3 || splitEnd.length < 3)
+            throw new RuntimeException("传入的时间格式不对");
+        SimpleDateFormat sdf;
+        switch (type) {
+            case DistanceDateType.YEAR:
+                startTime = splitStart[0];
+                endTime = splitEnd[0];
+                sdf = new SimpleDateFormat("yyyy", Locale.US);
+                break;
+            case DistanceDateType.TEAR_MONTH:
+                startTime = String.format("%s-%s", splitStart[0], splitStart[0]);
+                endTime = String.format("%s-%s", splitEnd[0], splitEnd[0]);
+                sdf = df_year_month;
+                break;
+            case DistanceDateType.YEAR_MONTH_DAY:
+            default:
+                sdf = df_year_day;
+                break;
+        }
+        List<String> list = new ArrayList<>();
+        list.add(startTime);
+        try {
+            Date dStart = sdf.parse(startTime);
+            Date dEnd = sdf.parse(endTime);
+            Calendar calStart = Calendar.getInstance();
+            calStart.setTime(dStart);
+            Calendar calEnd = Calendar.getInstance();
+            calEnd.setTime(dEnd);
+            //如果结束时间大于开始时间，则循环
+            while (dEnd.after(calStart.getTime())) {
+                switch (type) {
+                    case DistanceDateType.YEAR:
+                        calStart.add(Calendar.YEAR, 1);
+                        break;
+                    case DistanceDateType.TEAR_MONTH:
+                        calStart.add(Calendar.MONTH, 1);
+                        break;
+                    case DistanceDateType.YEAR_MONTH_DAY:
+                        calStart.add(Calendar.DAY_OF_MONTH, 1);
+                        break;
+                }
+                list.add(sdf.format(calStart));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+    @IntDef({DistanceDateType.YEAR, DistanceDateType.TEAR_MONTH, DistanceDateType.YEAR_MONTH_DAY})
+    public @interface DistanceDateType {//获取一段时间的字符串时间组  0按年份   1按年月   按年月日
+        int YEAR = 0;
+        int TEAR_MONTH = 1;
+        int YEAR_MONTH_DAY = 2;
     }
 }
