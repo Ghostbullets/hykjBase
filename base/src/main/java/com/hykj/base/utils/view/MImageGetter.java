@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.hykj.base.utils.DisplayUtils;
 import com.hykj.base.utils.bitmap.BitmapUtils;
 
