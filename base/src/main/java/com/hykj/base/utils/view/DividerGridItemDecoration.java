@@ -31,20 +31,6 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
     private int mSizeV;
     private final Rect mBounds = new Rect();
 
-    public DividerGridItemDecoration(Context context, @DrawableRes int dividerH, @DrawableRes int dividerV, int sizeH, int sizeV) {
-        mDividerH = context.getResources().getDrawable(dividerH);
-        mDividerV = context.getResources().getDrawable(dividerV);
-        mSizeH = sizeH;
-        mSizeV = sizeV;
-    }
-
-    public DividerGridItemDecoration(Context context, @DrawableRes int dividerH, @DrawableRes int dividerV) {
-        mDividerH = context.getResources().getDrawable(dividerH);
-        mDividerV = context.getResources().getDrawable(dividerV);
-        mSizeH = mDividerH.getIntrinsicWidth();
-        mSizeV = mDividerV.getIntrinsicHeight();
-    }
-
     public DividerGridItemDecoration(Context context) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDividerH = a.getDrawable(0);
@@ -54,12 +40,33 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         a.recycle();
     }
 
+    public DividerGridItemDecoration(Context context, @DrawableRes int dividerH, @DrawableRes int dividerV) {
+        mDividerH = context.getResources().getDrawable(dividerH);
+        mDividerV = context.getResources().getDrawable(dividerV);
+        mSizeH = mDividerH.getIntrinsicWidth();
+        mSizeV = mDividerV.getIntrinsicHeight();
+        init(context, dividerH, dividerV, 0, 0);
+    }
+
+    public DividerGridItemDecoration(Context context, @DrawableRes int dividerH, @DrawableRes int dividerV, int sizeH, int sizeV) {
+        init(context, dividerH, dividerV, sizeH, sizeV);
+    }
+
+    private void init(Context context, @DrawableRes int dividerH, @DrawableRes int dividerV, int sizeH, int sizeV) {
+        mDividerH = context.getResources().getDrawable(dividerH);
+        mDividerV = context.getResources().getDrawable(dividerV);
+        if (sizeH == 0)
+            sizeH = mDividerH.getIntrinsicWidth();
+        if (sizeV == 0)
+            sizeV = mDividerV.getIntrinsicHeight();
+        this.mSizeH = sizeH;
+        this.mSizeV = sizeV;
+    }
+
     @Override
     public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull State state) {
-
         drawHorizontal(c, parent);
         drawVertical(c, parent);
-
     }
 
     private int getSpanCount(RecyclerView parent) {
@@ -88,8 +95,11 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         }
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
+            if (isLastColumn(parent, parent.getChildAdapterPosition(child), getSpanCount(parent), parent.getChildCount())) {
+                continue;
+            }
             parent.getDecoratedBoundsWithMargins(child, mBounds);
-            int right = (int) (mBounds.right + Math.abs(child.getTranslationX()));
+            int right = mBounds.right + Math.round(child.getTranslationX());
             int left = right - mDividerH.getIntrinsicWidth();
             mDividerH.setBounds(left, top, right, bottom);
             mDividerH.draw(c);
@@ -111,8 +121,11 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         }
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
+            if (isLastRow(parent, parent.getChildAdapterPosition(child), getSpanCount(parent), parent.getChildCount())) {
+                continue;
+            }
             parent.getDecoratedBoundsWithMargins(child, mBounds);
-            int bottom = (int) (mBounds.bottom + Math.abs(child.getTranslationY()));
+            int bottom = mBounds.bottom + Math.round(child.getTranslationY());
             int top = bottom - mDividerV.getIntrinsicHeight();
             mDividerV.setBounds(left, top, right, bottom);
             mDividerV.draw(c);
@@ -124,20 +137,16 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
                                  int childCount) {
         LayoutManager layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
-            if ((pos + 1) % spanCount == 0)// 如果是最后一列，则不需要绘制右边
-            {
+            if ((pos + 1) % spanCount == 0) // 如果是最后一列，则不需要绘制右边
                 return true;
-            }
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             int orientation = ((StaggeredGridLayoutManager) layoutManager)
                     .getOrientation();
             if (orientation == StaggeredGridLayoutManager.VERTICAL) {
-                if ((pos + 1) % spanCount == 0)// 如果是最后一列，则不需要绘制右边
-                {
+                if ((pos + 1) % spanCount == 0) // 如果是最后一列，则不需要绘制右边
                     return true;
-                }
             } else {
-                childCount = childCount - childCount % spanCount;
+                childCount = childCount - (childCount % spanCount == 0 ? spanCount : childCount % spanCount);
                 if (pos >= childCount)// 如果是最后一列，则不需要绘制右边
                     return true;
             }
@@ -149,7 +158,7 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
                               int childCount) {
         LayoutManager layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
-            childCount = childCount - childCount % spanCount;
+            childCount = childCount - (childCount % spanCount == 0 ? spanCount : childCount % spanCount);
             if (pos >= childCount)// 如果是最后一行，则不需要绘制底部
                 return true;
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
@@ -157,17 +166,14 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
                     .getOrientation();
             // StaggeredGridLayoutManager 且纵向滚动
             if (orientation == StaggeredGridLayoutManager.VERTICAL) {
-                childCount = childCount - childCount % spanCount;
+                childCount = childCount - (childCount % spanCount == 0 ? spanCount : childCount % spanCount);
                 // 如果是最后一行，则不需要绘制底部
                 if (pos >= childCount)
                     return true;
-            } else
-            // StaggeredGridLayoutManager 且横向滚动
-            {
+            } else { // StaggeredGridLayoutManager 且横向滚动
                 // 如果是最后一行，则不需要绘制底部
-                if ((pos + 1) % spanCount == 0) {
+                if ((pos + 1) % spanCount == 0)
                     return true;
-                }
             }
         }
         return false;
