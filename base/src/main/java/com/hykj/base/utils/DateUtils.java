@@ -290,6 +290,48 @@ public class DateUtils {
     }
 
     /**
+     * 用于判断时间是否小于目标时间
+     *
+     * @param checkTime  要判断的时间  格式yyyy-MM-dd   2018-08-01
+     * @param targetTime 被当做目标来判断的时间  格式yyyy-MM-dd   2019-06-01
+     * @param type       判断类型
+     * @return 如果checkTime小于targetTime，返回true，否者返回false
+     */
+    public static boolean isCheckTimeLessTargetTime(String checkTime, String targetTime, @DistanceDateType int type) {
+        if (TextUtils.isEmpty(checkTime)) {
+            throw new RuntimeException("checkTime不能为空");
+        }
+        if (TextUtils.isEmpty(targetTime)) {
+            targetTime = df_year_day.format(new Date(System.currentTimeMillis()));
+        }
+        String[] splitCheck = checkTime.split("-");
+        String[] splitTarget = targetTime.split("-");
+        if (splitCheck.length < 3 || splitTarget.length < 3)
+            throw new RuntimeException("传入的时间格式不对,请传入yyyy-MM-dd格式时间字符串");
+        SimpleDateFormat sdf = df_year_day;
+        switch (type) {
+            case DistanceDateType.YEAR:
+                checkTime = splitCheck[0];
+                targetTime = splitTarget[0];
+                sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+                break;
+            case DistanceDateType.YEAR_MONTH:
+                checkTime = String.format("%s-%s", splitCheck[0], splitCheck[1]);
+                targetTime = String.format("%s-%s", splitTarget[0], splitTarget[1]);
+                sdf = df_year_month;
+                break;
+            case DistanceDateType.YEAR_MONTH_DAY:
+                break;
+        }
+        try {
+            return sdf.parse(targetTime).after(sdf.parse(checkTime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
      * 获取一段时间的字符串时间组
      *
      * @param startTime 起始时间 格式yyyy-MM-dd   2018-08-01
@@ -312,7 +354,7 @@ public class DateUtils {
                 endTime = splitEnd[0];
                 sdf = new SimpleDateFormat("yyyy", Locale.US);
                 break;
-            case DistanceDateType.TEAR_MONTH:
+            case DistanceDateType.YEAR_MONTH:
                 startTime = String.format("%s-%s", splitStart[0], splitStart[0]);
                 endTime = String.format("%s-%s", splitEnd[0], splitEnd[0]);
                 sdf = df_year_month;
@@ -337,7 +379,7 @@ public class DateUtils {
                     case DistanceDateType.YEAR:
                         calStart.add(Calendar.YEAR, 1);
                         break;
-                    case DistanceDateType.TEAR_MONTH:
+                    case DistanceDateType.YEAR_MONTH:
                         calStart.add(Calendar.MONTH, 1);
                         break;
                     case DistanceDateType.YEAR_MONTH_DAY:
@@ -351,10 +393,10 @@ public class DateUtils {
         return list;
     }
 
-    @IntDef({DistanceDateType.YEAR, DistanceDateType.TEAR_MONTH, DistanceDateType.YEAR_MONTH_DAY})
+    @IntDef({DistanceDateType.YEAR, DistanceDateType.YEAR_MONTH, DistanceDateType.YEAR_MONTH_DAY})
     public @interface DistanceDateType {//获取一段时间的字符串时间组  0按年份   1按年月   按年月日
         int YEAR = 0;
-        int TEAR_MONTH = 1;
+        int YEAR_MONTH = 1;
         int YEAR_MONTH_DAY = 2;
     }
 }
