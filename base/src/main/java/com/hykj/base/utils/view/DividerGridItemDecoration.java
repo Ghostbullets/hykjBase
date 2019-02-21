@@ -192,7 +192,10 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         int spanCount = getSpanCount(parent);
         if (parent.getAdapter() != null) {
             int childCount = parent.getAdapter().getItemCount();
-            if (isLastRow(parent, itemPosition, spanCount, childCount))// 如果是最后一行，则不需要绘制底部
+            //是最后一行，又是最后一列，则不绘制
+            if (isLastRow(parent, itemPosition, spanCount, childCount) && isLastColumn(parent, itemPosition, spanCount, childCount)) {
+                outRect.set(0, 0, 0, 0);
+            } else if (isLastRow(parent, itemPosition, spanCount, childCount))// 如果是最后一行，则不需要绘制底部
             {
                 outRect.set(0, 0, mSizeH, 0);
             } else if (isLastColumn(parent, itemPosition, spanCount, childCount))// 如果是最后一列，则不需要绘制右边
