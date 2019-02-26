@@ -59,6 +59,15 @@ public abstract class ProgressSubscribe<T> implements ProgressBarDialog.Progress
         }
     }
 
+    /**
+     * 显示进度条
+     */
+    public void showProgress(String message) {
+        if (mHub != null) {
+            mHub.showProgress(message);
+        }
+    }
+
     protected abstract void onResponse(T t);
 
     protected void onFailure(Throwable e) {
