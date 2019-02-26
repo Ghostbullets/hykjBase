@@ -25,14 +25,16 @@
                 android:id="@+id/iv_title_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp" />
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_title_middle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/layout_title_right"
+            android:layout_toRightOf="@id/layout_title_left"
             android:gravity="center"
             android:orientation="vertical">
 

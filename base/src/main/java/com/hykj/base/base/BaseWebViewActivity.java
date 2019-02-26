@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import android.widget.ImageView;
 
 import com.hykj.base.R;
 import com.hykj.base.listener.SingleOnClickListener;
+import com.hykj.base.utils.DisplayUtils;
 import com.hykj.base.utils.WebViewUtils;
 import com.hykj.base.utils.text.Tip;
 import com.hykj.base.view.TitleView;
@@ -245,6 +247,7 @@ public class BaseWebViewActivity extends TitleActivity {
     protected View createTitleRight() {
         ImageView imageView = new ImageView(mActivity);
         imageView.setImageResource(R.drawable.ic_refresh);
+        imageView.setPadding(0, 0, DisplayUtils.size2px(TypedValue.COMPLEX_UNIT_DIP, 10), 0);
         imageView.setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {

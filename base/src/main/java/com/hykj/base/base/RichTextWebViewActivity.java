@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
@@ -13,6 +14,7 @@ import com.google.gson.Gson;
 import com.hykj.base.R;
 import com.hykj.base.bean.RichTextInfo;
 import com.hykj.base.listener.SingleOnClickListener;
+import com.hykj.base.utils.DisplayUtils;
 import com.hykj.base.utils.WebViewUtils;
 import com.hykj.base.view.TitleView;
 
@@ -60,6 +62,7 @@ public class RichTextWebViewActivity extends TitleActivity {
     protected View createTitleRight() {
         ImageView imageView = new ImageView(mActivity);
         imageView.setImageResource(R.drawable.ic_refresh);
+        imageView.setPadding(0, 0, DisplayUtils.size2px(TypedValue.COMPLEX_UNIT_DIP, 10), 0);
         imageView.setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {
