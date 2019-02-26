@@ -33,8 +33,6 @@
             android:id="@+id/layout_title_middle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/layout_title_right"
-            android:layout_toRightOf="@id/layout_title_left"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -42,6 +40,8 @@
                 android:id="@+id/tv_title_middle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
                 android:ellipsize="marquee"
                 android:gravity="center"
                 android:singleLine="true"
