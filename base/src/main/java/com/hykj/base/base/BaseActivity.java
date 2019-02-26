@@ -29,11 +29,12 @@ public abstract class BaseActivity extends FragmentActivity {
         if (needLogin()) {
             return;
         }
+        onCreateSub(savedInstanceState);
         //加载前处理
         if (preLoad())
             return;
-        mHub=new ProgressBarDialog().init(mActivity);
-        isCreated=true;
+        mHub = new ProgressBarDialog().init(mActivity);
+        isCreated = true;
         //初始化内容
         onCreateSub();
     }
@@ -41,22 +42,26 @@ public abstract class BaseActivity extends FragmentActivity {
     public void showProDialog() {
         showProDialog(null);
     }
+
     public void showProDialog(boolean cancelable) {
-        showProDialog(cancelable,null);
+        showProDialog(cancelable, null);
     }
+
     public void showProDialog(String msg) {
-        showProDialog(false,msg);
+        showProDialog(false, msg);
     }
-    public void showProDialog(boolean cancelable,String msg) {
+
+    public void showProDialog(boolean cancelable, String msg) {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
-            if (!TextUtils.isEmpty(msg)){
+            if (!TextUtils.isEmpty(msg)) {
                 progressDialog.setMessage(msg);
             }
             progressDialog.setCancelable(cancelable);
             progressDialog.show();
         }
     }
+
     public void dismissProDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
@@ -64,10 +69,14 @@ public abstract class BaseActivity extends FragmentActivity {
         progressDialog = null;
     }
 
+    protected void onCreateSub(Bundle savedInstanceState) {
+
+    }
+
     /**
      * 初始化内容
      */
-    protected void onCreateSub(){
+    protected void onCreateSub() {
         // 载入内容
         loadContentView();
 
@@ -78,8 +87,8 @@ public abstract class BaseActivity extends FragmentActivity {
     /**
      * 载入内容
      */
-    protected void loadContentView(){
-        if (getLayoutId()!=-1)
+    protected void loadContentView() {
+        if (getLayoutId() != -1)
             setContentView(getLayoutId());
     }
 
@@ -94,14 +103,16 @@ public abstract class BaseActivity extends FragmentActivity {
 
     /**
      * 是否需要登录
+     *
      * @return
      */
-    protected boolean needLogin(){
+    protected boolean needLogin() {
         return false;
     }
 
     /**
      * 布局
+     *
      * @return
      */
     protected abstract int getLayoutId();
@@ -112,7 +123,6 @@ public abstract class BaseActivity extends FragmentActivity {
     protected abstract void init();
 
     /**
-     *
      * @return 是否可以标题栏半透明
      */
     public boolean checkTransStatus() {
@@ -138,8 +148,8 @@ public abstract class BaseActivity extends FragmentActivity {
      *
      * @param cls
      */
-    protected void startActivity(Class<?> cls){
-        startActivity(cls,null);
+    protected void startActivity(Class<?> cls) {
+        startActivity(cls, null);
     }
 
     /**
@@ -148,9 +158,9 @@ public abstract class BaseActivity extends FragmentActivity {
      * @param cls
      * @param bundle
      */
-    protected void startActivity(Class<?> cls ,Bundle bundle){
-        Intent intent=new Intent(mActivity,cls);
-        if (bundle!=null){
+    protected void startActivity(Class<?> cls, Bundle bundle) {
+        Intent intent = new Intent(mActivity, cls);
+        if (bundle != null) {
             intent.putExtras(bundle);
         }
         startActivity(intent);
@@ -162,8 +172,8 @@ public abstract class BaseActivity extends FragmentActivity {
      * @param cls
      * @param requestCode
      */
-    protected void startActivityForResult(Class<?> cls ,int requestCode){
-        startActivityForResult(cls,requestCode,null);
+    protected void startActivityForResult(Class<?> cls, int requestCode) {
+        startActivityForResult(cls, requestCode, null);
     }
 
     /**
@@ -173,11 +183,11 @@ public abstract class BaseActivity extends FragmentActivity {
      * @param requestCode
      * @param bundle
      */
-    protected void startActivityForResult(Class<?> cls ,int requestCode,Bundle bundle){
-        Intent intent=new Intent(mActivity,cls);
-        if (bundle!=null)
+    protected void startActivityForResult(Class<?> cls, int requestCode, Bundle bundle) {
+        Intent intent = new Intent(mActivity, cls);
+        if (bundle != null)
             intent.putExtras(bundle);
-        startActivityForResult(intent,requestCode);
+        startActivityForResult(intent, requestCode);
     }
 
     /***
@@ -185,18 +195,18 @@ public abstract class BaseActivity extends FragmentActivity {
      *
      * @param view
      */
-    protected void HideKeyboard(View view){
+    protected void HideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()){
-            imm.hideSoftInputFromWindow(view.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
     /**
      * 显示软件盘
      */
-    protected void ShowKeyboard(View view){
-        InputMethodManager imm= (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(view,InputMethodManager.SHOW_FORCED);
+    protected void ShowKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 }
