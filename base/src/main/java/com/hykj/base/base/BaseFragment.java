@@ -1,5 +1,6 @@
 package com.hykj.base.base;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +52,11 @@ public abstract class BaseFragment extends Fragment {
     //是否可以标题栏半透明
     public boolean checkTransStatus() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    protected void setTranslucentStatus(boolean on) {
+
     }
 
     /**
