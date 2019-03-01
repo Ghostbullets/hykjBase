@@ -1,1 +1,4 @@
-<resources></resources>
+<resources>
+    <string name="behavior_appbar_layout">com.hykj.base.utils.view.FixAppBarLayoutBehavior</string>
+    <string name="behavior_appbar_layout_can_drag">com.hykj.base.utils.view.FixCanDragAppBarLayoutBehavior</string>
+</resources>
