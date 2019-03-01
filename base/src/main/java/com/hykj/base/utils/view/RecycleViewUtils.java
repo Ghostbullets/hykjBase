@@ -47,10 +47,12 @@ public class RecycleViewUtils {
                     if (child == rv) {
                         if (itemCount > 0) {
                             View childAt = rv.getChildAt(0);
-                            measuredHeight = childAt.getMeasuredHeight();
-                            if (measuredHeight <= 0) {
-                                childAt.measure(-1, -1);
+                            if (childAt != null) {
                                 measuredHeight = childAt.getMeasuredHeight();
+                                if (measuredHeight <= 0) {
+                                    childAt.measure(-1, -1);
+                                    measuredHeight = childAt.getMeasuredHeight();
+                                }
                             }
                         }
                     } else {
@@ -78,7 +80,7 @@ public class RecycleViewUtils {
                 if (measuredHeight > maximumHeight) {
                     params.height = maximumHeight;
                 } else {
-                    params.height = measuredHeight;
+                    params.height = RecyclerView.LayoutParams.WRAP_CONTENT;
                 }
                 rv.setLayoutParams(params);
             }
