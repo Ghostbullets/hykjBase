@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.hykj.base.R;
 import com.hykj.base.view.TitleView;
@@ -16,11 +17,13 @@ import com.hykj.base.view.TitleView;
  */
 public abstract class TitleFragment extends BaseFragment {
     protected TitleView mTitle;
+    protected View vDivider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.layout_title_content, null);
         mTitle = mView.findViewById(R.id.title);
+        vDivider=mView.findViewById(R.id.v_divider);
         View contentView = inflater.inflate(getLayoutId(), null);
         contentView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((ViewGroup) mView).addView(contentView);
@@ -62,6 +65,22 @@ public abstract class TitleFragment extends BaseFragment {
     @Override
     protected void init() {
 
+    }
+
+    /**
+     * 隐藏分割线
+     */
+    protected void hideDivider() {
+        vDivider.setVisibility(View.GONE);
+    }
+
+    /**
+     * 设置分割线高度
+     */
+    protected void setDividerHeight(int dividerHeight) {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) vDivider.getLayoutParams();
+        params.height = dividerHeight;
+        vDivider.setLayoutParams(params);
     }
 
     /**

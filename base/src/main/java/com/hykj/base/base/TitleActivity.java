@@ -3,28 +3,31 @@ package com.hykj.base.base;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.hykj.base.R;
 import com.hykj.base.view.TitleView;
 
-public abstract class TitleActivity extends BaseActivity{
+public abstract class TitleActivity extends BaseActivity {
     protected TitleView mTitle;
+    protected View vDivider;
 
     @Override
     protected void onCreateSub() {
-        ViewGroup layout = (ViewGroup) View.inflate(mActivity, R.layout.layout_title_content,null);
-        mTitle= (TitleView) layout.findViewById(R.id.title);
-        View contentView = View.inflate(this,getLayoutId(),null);
+        ViewGroup layout = (ViewGroup) View.inflate(mActivity, R.layout.layout_title_content, null);
+        mTitle = layout.findViewById(R.id.title);
+        vDivider = layout.findViewById(R.id.v_divider);
+        View contentView = View.inflate(this, getLayoutId(), null);
         contentView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         layout.addView(contentView);
         setContentView(layout);
         View left = createTitleLeft();
-        if (left!=null){
+        if (left != null) {
             mTitle.getLayoutLeft().removeAllViews();
             mTitle.getLayoutLeft().addView(left);
         }
         View right = createTitleRight();
-        if (right!=null){
+        if (right != null) {
             mTitle.getLayoutRight().removeAllViews();
             mTitle.getLayoutRight().addView(right);
         }
@@ -35,7 +38,7 @@ public abstract class TitleActivity extends BaseActivity{
             }
         });
 
-        if (checkTransStatus()){
+        if (checkTransStatus()) {
             setTranslucentStatus(true);
         }
         init(mTitle);
@@ -45,13 +48,26 @@ public abstract class TitleActivity extends BaseActivity{
     protected void setTranslucentStatus(boolean on) {
         super.setTranslucentStatus(on);
         mTitle.setTranslucentStatus(on);
-        mTitle.setStatusBarBackgroundColor(on?getResources().getColor(R.color.gray_a8): Color.TRANSPARENT);
+        mTitle.setStatusBarBackgroundColor(on ? getResources().getColor(R.color.gray_a8) : Color.TRANSPARENT);
     }
 
     @Override
     protected void init() {
 
     }
+
+    //隐藏分割线
+    protected void hideDivider() {
+        vDivider.setVisibility(View.GONE);
+    }
+
+    //设置分割线高度
+    protected void setDividerHeight(int dividerHeight) {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) vDivider.getLayoutParams();
+        params.height = dividerHeight;
+        vDivider.setLayoutParams(params);
+    }
+
     /**
      * 获取布局
      *
