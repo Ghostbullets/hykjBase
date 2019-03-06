@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,10 +19,10 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
     protected List<T> mDatas;
     protected final int mLayoutId;
 
-    public CommonAdapter(Context context, List<T> mDatas, int mLayoutId) {
+    public CommonAdapter(Context context, List<T> datas, int mLayoutId) {
         this.mContext = context;
         this.mInflater=LayoutInflater.from(this.mContext);
-        this.mDatas = mDatas;
+        this.mDatas = datas == null ? new ArrayList<T>() : datas;
         this.mLayoutId = mLayoutId;
     }
 

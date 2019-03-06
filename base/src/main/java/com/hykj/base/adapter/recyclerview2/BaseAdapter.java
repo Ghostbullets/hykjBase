@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerV
 
     public BaseAdapter(Context context, List<T> datas, int layoutResId) {
         this.mContext = context;
-        this.mDatas = datas;
+        this.mDatas = datas == null ? new ArrayList<T>() : datas;
         this.mItemLayoutId = layoutResId;
     }
 

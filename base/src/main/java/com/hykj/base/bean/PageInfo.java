@@ -41,6 +41,10 @@ public class PageInfo {
         isHasNext = hasNext;
     }
 
+    public void setHasNext(Integer total) {
+        this.isHasNext = total != null && pageNo * pageSize < total;
+    }
+
     public boolean isCanLoadMore() {
         return isHasNext && !isLoading;
     }
