@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * 万能适配器
+ *
  * @param <T>
  */
 public abstract class CommonAdapter<T> extends BaseAdapter {
@@ -21,7 +22,7 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
 
     public CommonAdapter(Context context, List<T> datas, int mLayoutId) {
         this.mContext = context;
-        this.mInflater=LayoutInflater.from(this.mContext);
+        this.mInflater = LayoutInflater.from(this.mContext);
         this.mDatas = datas == null ? new ArrayList<T>() : datas;
         this.mLayoutId = mLayoutId;
     }
@@ -43,16 +44,17 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = ViewHolder.get(this.mContext, convertView, parent, this.mLayoutId,position);
-        this.convert(viewHolder,this.getItem(position),position);
+        ViewHolder viewHolder = ViewHolder.get(this.mContext, convertView, parent, this.mLayoutId, position);
+        this.convert(viewHolder, this.getItem(position), position);
         return viewHolder.getConvertView();
     }
 
-    public abstract void convert(ViewHolder viewHolder,T t,int position);
+    protected abstract void convert(ViewHolder viewHolder, T t, int position);
 
     /**
      * 导入数据
-     * @param data 新数据
+     *
+     * @param data    新数据
      * @param isClear 是否清空原有数据
      */
     public void reloadListView(List<T> data, boolean isClear) {
