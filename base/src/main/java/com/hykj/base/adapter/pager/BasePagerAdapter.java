@@ -63,7 +63,7 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
         return mCurrentView;
     }
 
-    protected abstract void convert(ViewHolder viewHolder, T t, int position);
+    protected abstract void convert(ViewHolder holder, T t, int position);
 
     protected void destroyItemEx(ViewGroup container, int position, View view) {
     }

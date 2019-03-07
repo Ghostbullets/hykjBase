@@ -49,7 +49,7 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
         return viewHolder.getConvertView();
     }
 
-    protected abstract void convert(ViewHolder viewHolder, T t, int position);
+    protected abstract void convert(ViewHolder holder, T t, int position);
 
     /**
      * 导入数据

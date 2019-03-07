@@ -2,6 +2,7 @@ package com.hykj.base.adapter.pager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.DrawableRes;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,13 +42,13 @@ public class ViewHolder {
         return convertView == null ? new ViewHolder(context, container, layoutId, position, adapter, listener) : (ViewHolder) convertView.getTag();
     }
 
-    public ViewHolder setText(int viewId, String text) {
+    public ViewHolder setText(int viewId, CharSequence text) {
         TextView view = this.getView(viewId);
         view.setText(text);
         return this;
     }
 
-    public ViewHolder setImageResource(int viewId, int drawableId) {
+    public ViewHolder setImageResource(int viewId, @DrawableRes int drawableId) {
         ImageView view = this.getView(viewId);
         view.setImageResource(drawableId);
         return this;
