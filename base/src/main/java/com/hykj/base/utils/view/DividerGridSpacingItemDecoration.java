@@ -113,12 +113,19 @@ public class DividerGridSpacingItemDecoration extends RecyclerView.ItemDecoratio
         return GridLayoutManager.VERTICAL;
     }
 
-    //根据绘制的方向来返回需要绘制的分割线的item的总数
+    /**
+     * 返回要绘制分割线的item的总数
+     *
+     * @param isTrueOrientation
+     * @param parent
+     * @param spanCount
+     * @param childCount
+     * @return
+     */
     public int getDrawCount(boolean isTrueOrientation, RecyclerView parent, int spanCount, int childCount) {
         int pos = parent.getChildAdapterPosition(parent.getChildAt(parent.getChildCount() - 1));//得到最后一个childView的pos
         int offset = childCount % spanCount == 0 ? spanCount : childCount % spanCount;//获取偏差
-        boolean isLast = (pos + offset) >= childCount;
-        // 垂直布局情况下,如果是最后一行，则不需要绘制底部；水平布局情况下,如果是最后一列，则不需要绘制右边
+        boolean isLast = (pos + offset) >= childCount;//显示在“屏幕”上的最后一个行、列是不是“所有数据”里面的最后一行、列了
         return isTrueOrientation && isLast ? parent.getChildCount() - offset : parent.getChildCount();
     }
 
@@ -135,6 +142,8 @@ public class DividerGridSpacingItemDecoration extends RecyclerView.ItemDecoratio
             top = 0;
             bottom = parent.getHeight();
         }
+        //当布局方向是水平的时候，除了最后一列以外，其他的列都需要绘制位于它们右边的分割线
+        //当布局方向是垂直的时候，则所有的列都要绘制分割线，只不过第一列左边绘制宽度是0,最后一列右边绘制宽度是0
         boolean isHorizontal = getOrientation(parent) == GridLayoutManager.HORIZONTAL;
         int size = getDrawCount(isHorizontal, parent, spanCount, childCount);
         for (int i = 0; i < size; i++) {
@@ -176,6 +185,8 @@ public class DividerGridSpacingItemDecoration extends RecyclerView.ItemDecoratio
             left = 0;
             right = parent.getWidth();
         }
+        //当布局方向是垂直的时候，除了最后一行以外，其他的行都需要绘制位于它们下边的分割线
+        //当布局方向是水平的时候，则所有的行都要绘制分割线，只不过第一行上边绘制高度是0,最后一行下边绘制高度是0
         boolean isVertical = getOrientation(parent) == GridLayoutManager.VERTICAL;
         int size = getDrawCount(isVertical, parent, spanCount, childCount);
         for (int i = 0; i < size; i++) {
@@ -204,7 +215,7 @@ public class DividerGridSpacingItemDecoration extends RecyclerView.ItemDecoratio
         c.restore();
     }
 
-    //是否是最后一列,注意childCount=parent.getAdapter().getItemCount();
+    //是否是最后一列
     private boolean isLastColumn(RecyclerView parent, int pos, int spanCount, int childCount) {
         LayoutManager layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
