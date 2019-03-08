@@ -12,15 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.SparseArray;
 import android.view.View;
 
 /**
  * @author cjf
- * 分割线原理：getItemOffsets()方法里面调用 outRect.set(0, 0, mSizeH, mSizeV);我个人理解是设置了item的margin，比如这里设置item的右外边距、底外边距
- * 这时候其实已经相当于设置了一个分割线，颜色是透明的，RecycleView是什么颜色，则item之间的分割就是什么颜色
- * 这个时候使用 parent.getDecoratedBoundsWithMargins(child, mBounds)，获取到item的矩阵大小，这里面就包括上面设置的margin，
- * mBounds.right得到分割线的right，减去mDividerH.getIntrinsicWidth()，得到分割线的left，然后 mDividerH.setBounds(left, 0, right, RecycleView.getHeight());
- * 即可设置出一条竖直的有颜色的分割线，分割线宽度=mDividerH.getIntrinsicWidth()
  */
 public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
 
@@ -41,10 +37,6 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     public DividerGridItemDecoration(Context context, @DrawableRes int dividerH, @DrawableRes int dividerV) {
-        mDividerH = context.getResources().getDrawable(dividerH);
-        mDividerV = context.getResources().getDrawable(dividerV);
-        mSizeH = mDividerH.getIntrinsicWidth();
-        mSizeV = mDividerV.getIntrinsicHeight();
         init(context, dividerH, dividerV, 0, 0);
     }
 
@@ -55,12 +47,8 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
     private void init(Context context, @DrawableRes int dividerH, @DrawableRes int dividerV, int sizeH, int sizeV) {
         mDividerH = context.getResources().getDrawable(dividerH);
         mDividerV = context.getResources().getDrawable(dividerV);
-        if (sizeH == 0)
-            sizeH = mDividerH.getIntrinsicWidth();
-        if (sizeV == 0)
-            sizeV = mDividerV.getIntrinsicHeight();
-        this.mSizeH = sizeH;
-        this.mSizeV = sizeV;
+        this.mSizeH = sizeH == 0 ? mDividerH.getIntrinsicWidth() : sizeH;
+        this.mSizeV = sizeV == 0 ? mDividerV.getIntrinsicHeight() : sizeV;
     }
 
     @Override
@@ -87,7 +75,7 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         int bottom;
         if (parent.getClipToPadding()) {
             top = parent.getPaddingTop();
-            bottom = parent.getHeight();
+            bottom = parent.getHeight() - parent.getPaddingBottom();
             c.clipRect(parent.getPaddingLeft(), top, parent.getWidth() - parent.getPaddingRight(), bottom);
         } else {
             top = 0;
@@ -95,12 +83,9 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         }
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
-            if (isLastColumn(parent, parent.getChildAdapterPosition(child), getSpanCount(parent), parent.getChildCount())) {
-                continue;
-            }
             parent.getDecoratedBoundsWithMargins(child, mBounds);
             int right = mBounds.right + Math.round(child.getTranslationX());
-            int left = right - mDividerH.getIntrinsicWidth();
+            int left = right - mSizeH;
             mDividerH.setBounds(left, top, right, bottom);
             mDividerH.draw(c);
         }
@@ -121,12 +106,9 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         }
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
-            if (isLastRow(parent, parent.getChildAdapterPosition(child), getSpanCount(parent), parent.getChildCount())) {
-                continue;
-            }
             parent.getDecoratedBoundsWithMargins(child, mBounds);
             int bottom = mBounds.bottom + Math.round(child.getTranslationY());
-            int top = bottom - mDividerV.getIntrinsicHeight();
+            int top = bottom - mSizeV;
             mDividerV.setBounds(left, top, right, bottom);
             mDividerV.draw(c);
         }

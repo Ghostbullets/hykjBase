@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.LinkedList;
+
 /**
  * created by cjf
  * on:2019/3/7 10:42
@@ -20,7 +22,7 @@ public class ViewHolder {
     private View mConvertView;
     private SparseArray<View> mViews;
 
-    public ViewHolder(Context context, ViewGroup container, int layoutId, int position, final BasePagerAdapter adapter, final BasePagerAdapter.OnItemClickListener listener) {
+    public ViewHolder(Context context, int layoutId, int position, final BasePagerAdapter adapter, final BasePagerAdapter.OnItemClickListener listener) {
         this.mPosition = position;
         this.mViews = new SparseArray<>();
         this.mConvertView = LayoutInflater.from(context).inflate(layoutId, null);
@@ -32,14 +34,10 @@ public class ViewHolder {
                     listener.OnItemClick(adapter, mConvertView, mPosition);
             }
         });
-        if (this.mConvertView.getLayoutParams() == null) {
-            this.mConvertView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
-        container.addView(this.mConvertView);
     }
 
-    public static ViewHolder get(Context context, ViewGroup container, View convertView, int layoutId, int position, BasePagerAdapter adapter, BasePagerAdapter.OnItemClickListener listener) {
-        return convertView == null ? new ViewHolder(context, container, layoutId, position, adapter, listener) : (ViewHolder) convertView.getTag();
+    public static ViewHolder get(Context context, LinkedList<View> mViews, int layoutId, int position, BasePagerAdapter adapter, BasePagerAdapter.OnItemClickListener listener) {
+        return mViews.size() > 0 ? (ViewHolder) mViews.removeFirst().getTag() : new ViewHolder(context, layoutId, position, adapter, listener);
     }
 
     public ViewHolder setText(int viewId, CharSequence text) {

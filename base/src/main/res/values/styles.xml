@@ -16,9 +16,6 @@
     </style>
 
     <style name="translucent" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="colorPrimary">#FFF94444</item>-->
-     <!--   <item name="colorPrimaryDark">#FFF94444</item>-->
-        <!--<item name="colorAccent">#FFFF4081</item>-->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>

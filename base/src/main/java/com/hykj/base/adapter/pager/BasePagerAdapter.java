@@ -3,11 +3,11 @@ package com.hykj.base.adapter.pager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -20,8 +20,9 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     protected View mCurrentView;
     protected Context mContext;
     protected List<T> mDatas;
-    protected final int mLayoutId;
+    private final int mLayoutId;
     private OnItemClickListener mListener;
+    private LinkedList<View> mViews = new LinkedList<>();//回收利用View
 
     public BasePagerAdapter(Context context, List<T> datas, int layoutId) {
         this.mContext = context;
@@ -42,8 +43,9 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        ViewHolder holder = ViewHolder.get(mContext, container, mCurrentView, mLayoutId, position, this, mListener);
+        ViewHolder holder = ViewHolder.get(mContext, mViews, mLayoutId, position, this, mListener);
         this.convert(holder, this.mDatas.get(position), position);
+        container.addView(holder.getContentView());
         return holder.getContentView();
     }
 
@@ -51,6 +53,7 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         destroyItemEx(container, position, (View) object);
         container.removeView((View) object);
+        mViews.addLast((View) object);
     }
 
     @Override
