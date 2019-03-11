@@ -61,6 +61,13 @@ public class ViewHolder {
         return this;
     }
 
+    public ViewHolder setOnClickListener(int viewId, Object o, View.OnClickListener listener) {
+        View view = this.getView(viewId);
+        view.setTag(o);
+        view.setOnClickListener(listener);
+        return this;
+    }
+
     public int getPosition() {
         return this.position;
     }

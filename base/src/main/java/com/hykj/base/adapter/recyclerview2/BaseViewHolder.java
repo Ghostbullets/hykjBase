@@ -44,6 +44,13 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         return this;
     }
 
+    public BaseViewHolder setOnClickListener(int viewId, Object o, View.OnClickListener listener) {
+        View view = this.getView(viewId);
+        view.setTag(o);
+        view.setOnClickListener(listener);
+        return this;
+    }
+
     public <T extends View> T getView(int id) {
         View view = mViews.get(id);
         if (view == null) {
