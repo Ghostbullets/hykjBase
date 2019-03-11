@@ -290,11 +290,18 @@ public class BaseWebViewActivity extends TitleActivity {
         super.onDestroy();
     }
 
-    /**
-     * 开启画面
-     *
-     * @param context
-     */
+    public static void start(Context context, String url, String title, boolean isPost, String json) {
+        start(context, url, title, isPost, json, BaseWebViewActivity.class);
+    }
+
+    public static void start(Context context, String url, String title) {
+        start(context, url, title, false, null);
+    }
+
+    public static void start(Context context, String url, String title, Class<? extends BaseWebViewActivity> cls) {
+        start(context, url, title, false, null, cls);
+    }
+
     /**
      * 开启画面
      *
@@ -303,9 +310,10 @@ public class BaseWebViewActivity extends TitleActivity {
      * @param title   标题
      * @param isPost  是否是post请求,这里由于Content-type格式为application/json，所以字符串需要以下格式
      * @param json    post需要携带的json字符串 格式为"{"title":"啦啦啦"&"phone":"啦啦啦啦啦啦啦"}"
+     * @param cls     继承BaseWebViewActivity类的Activity
      */
-    public static void start(Context context, String url, String title, boolean isPost, String json) {
-        Intent intent = new Intent(context, BaseWebViewActivity.class);
+    public static void start(Context context, String url, String title, boolean isPost, String json, Class<? extends BaseWebViewActivity> cls) {
+        Intent intent = new Intent(context, cls);
         intent.putExtra(URL, url);
         intent.putExtra(TITLE, title);
         intent.putExtra(IS_POST, isPost);

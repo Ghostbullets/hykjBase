@@ -99,16 +99,21 @@ public class RichTextWebViewActivity extends TitleActivity {
         super.onDestroy();
     }
 
+    public static void start(Context context, RichTextInfo info) {
+        start(context, info, RichTextWebViewActivity.class);
+    }
+
     /**
      * 开启画面
      *
-     * @param context
+     * @param context 上下文
+     * @param info    富文本信息
+     * @param cls     继承RichTextWebViewActivity类的Activity
      */
-    public static void start(Context context, RichTextInfo info) {
-        Intent intent = new Intent(context, RichTextWebViewActivity.class);
+    public static void start(Context context, RichTextInfo info, Class<? extends RichTextWebViewActivity> cls) {
+        Intent intent = new Intent(context, cls);
         if (info != null)
             intent.putExtra(INFO, new Gson().toJson(info));
         context.startActivity(intent);
     }
-
 }
