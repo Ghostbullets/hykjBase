@@ -1,11 +1,14 @@
 package com.hykj.base.view;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,7 +33,7 @@ public class TitleView extends LinearLayout {
     private int lastMiddlePadding = 0;
 
     public TitleView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public TitleView(Context context, @Nullable AttributeSet attrs) {
@@ -115,7 +118,36 @@ public class TitleView extends LinearLayout {
     /**
      * 设置状态栏颜色
      */
-    public void setStatusBarBackgroundColor(int color){
+    public void setStatusBarBackgroundColor(int color) {
         vTransStatusBar.setBackgroundColor(color);
+    }
+
+    /**
+     * 设置标题栏图标颜色,android6.0以上才有用
+     *
+     * @param setDark 是否设置为黑色
+     */
+    public void setStatusIconColor(boolean setDark, Window window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = window.getDecorView();
+            int vis = decorView.getSystemUiVisibility();
+            if (setDark) {
+                vis |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            } else {
+                vis &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            decorView.setSystemUiVisibility(vis);
+        }
+    }
+
+    /**
+     * @param isWhiteBg 当版本大于等于6.0时，true设置状态栏背景白色，false 设置状态栏背景黑色
+     * @param window
+     */
+    public void setStatusBarBackgroundWhiteOrBlack(boolean isWhiteBg, Window window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarBackgroundColor(isWhiteBg ? Color.WHITE : Color.BLACK);
+            setStatusIconColor(isWhiteBg, window);
+        }
     }
 }
