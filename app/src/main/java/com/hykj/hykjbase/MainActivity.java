@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.hykj.base.adapter.recyclerview2.BaseViewHolder;
 import com.hykj.base.adapter.recyclerview2.SimpleRecycleViewAdapter;
 import com.hykj.base.listener.SingleOnClickListener;
+import com.hykj.base.utils.DateUtils;
 import com.hykj.base.utils.DisplayUtils;
 import com.hykj.base.utils.bitmap.BitmapUtils;
 import com.hykj.base.utils.storage.FileUtil;
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.tv_picker).setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {
-                PickerImageActivity.start(MainActivity.this, REQ_PHOTO, null, false);
+                String outPath = FileUtil.getCacheFilePath(DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + ".png", FileUtil.FileType.IMG);
+                PickerImageActivity.start(MainActivity.this, REQ_PHOTO, outPath, false);
             }
         });
         for (int i = 0; i < 97; i++) {
