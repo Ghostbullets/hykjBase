@@ -140,7 +140,7 @@ public class FileProviderUtils {
         }
         //生成的Uri路径格式为file://xxx,无法在App之间共享的，我们需要生成content://xxx类型的Uri，方法就是通过FileProvider.getUriForFile来实现：
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !isNotProvider) {
-            return FileProvider.getUriForFile(context, context.getPackageName() + ".FileProvider", file);
+            return FileProvider.getUriForFile(context, /*context.getPackageName() + */"com.hykj.base.FileProvider", file);
         } else {
             return Uri.fromFile(file);
         }
