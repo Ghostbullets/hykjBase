@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
+        <!-- android P 9.0适配问题-->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity
             android:name=".view.activity.PickerImageActivity"
             android:theme="@style/translucent" />

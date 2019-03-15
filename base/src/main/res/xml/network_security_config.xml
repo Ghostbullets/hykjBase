@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?><!--用于android9.0服务器连接失败-->
+<network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
