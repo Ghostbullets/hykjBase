@@ -1,5 +1,10 @@
 package com.hykj.base.utils.text;
 
+import android.support.annotation.StringDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
@@ -59,5 +64,47 @@ public class DecimalUtils {
      */
     public static String getPrice(int price){
         return intPrice(price/(float)100);
+    }
+
+    /**
+     * 返回指定单位的格式化字符串
+     *
+     * @param size
+     * @param sizeTypeName
+     * @return
+     */
+    public static String getFormatSizeDesc(double size, @SizeTypeName String sizeTypeName) {
+        return getFormatSize(size, sizeTypeName) + sizeTypeName;
+    }
+
+    public static float getFormatSize(double size, @SizeTypeName String sizeTypeName) {
+        BigDecimal result;
+        double byteSize;
+        switch (sizeTypeName) {
+            case SizeTypeName.K:
+            default:
+                byteSize = size / 1024;
+                break;
+            case SizeTypeName.M:
+                byteSize = size / 1024 / 1024;
+                break;
+            case SizeTypeName.GB:
+                byteSize = size / 1024 / 1024 / 1024;
+                break;
+            case SizeTypeName.TB:
+                byteSize = size / 1024 / 1024 / 1024 / 1024;
+                break;
+        }
+        result = new BigDecimal(byteSize);
+        return result.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({SizeTypeName.K, SizeTypeName.M, SizeTypeName.GB, SizeTypeName.TB})
+    public @interface SizeTypeName {
+        String K = "K";
+        String M = "M";
+        String GB = "GB";
+        String TB = "TB";
     }
 }
