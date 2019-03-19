@@ -68,7 +68,7 @@ public class DateUtils {
         return formatDate;
     }
 
-    public static String getFormatDate(@NonNull Long time, @DateFormatType Integer formatType) {
+    public static String getFormatDate(long time, @DateFormatType Integer formatType) {
         return getFormatDate(new Date(time), formatType);
     }
 
