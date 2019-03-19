@@ -1,6 +1,8 @@
 package com.hykj.hykjbase;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
@@ -23,9 +25,15 @@ import com.hykj.base.utils.storage.FileUtil;
 import com.hykj.base.utils.view.DividerGridItemDecoration;
 import com.hykj.base.utils.view.DividerGridSpacingItemDecoration;
 import com.hykj.base.view.activity.PickerImageActivity;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQ_PHOTO = 0x01;
@@ -41,8 +49,28 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.tv_picker).setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {
-                String outPath = FileUtil.getCacheFilePath(DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + ".png", FileUtil.FileType.IMG);
+            /*    String outPath = FileUtil.getCacheFilePath(DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + ".png", FileUtil.FileType.IMG);
                 PickerImageActivity.start(MainActivity.this, REQ_PHOTO, outPath, false);
+*/
+            new RxPermissions(MainActivity.this)
+                    .request(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA)
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            if (aBoolean){
+                                Matisse.from(MainActivity.this)
+                                        .choose(MimeType.ofAll())
+                                        .maxSelectable(9)
+                                        .originalEnable(true)
+                                        .spanCount(4)
+                                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                                        .thumbnailScale(0.5f)
+                                        .theme(com.hykj.base.R.style.Matisse_Zhihu)
+                                        .imageEngine(new MyGlideEngine())
+                                        .forResult(2);
+                            }
+                        }
+                    });
             }
         });
         for (int i = 0; i < 97; i++) {
