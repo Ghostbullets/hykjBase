@@ -1,6 +1,7 @@
 package com.hykj.base.utils;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.text.ParseException;
@@ -38,9 +39,11 @@ public class DateUtils {
         int DF_YEAR_DAY_TIME = 5;
     }
 
-    public static String getFormatDate(Date date, @DateFormatType int formatType) {
+    public static String getFormatDate(Date date, @DateFormatType Integer formatType) {
         if (date == null)
             date = new Date(System.currentTimeMillis());
+        if (formatType == null)
+            formatType = DateFormatType.DF_YEAR_DAY;
         String formatDate = null;
         switch (formatType) {
             case DateFormatType.DF_TIME:
@@ -63,6 +66,10 @@ public class DateUtils {
                 break;
         }
         return formatDate;
+    }
+
+    public static String getFormatDate(@NonNull Long time, @DateFormatType Integer formatType) {
+        return getFormatDate(new Date(time), formatType);
     }
 
     /**
@@ -142,8 +149,8 @@ public class DateUtils {
     /**
      * 时间格式统一化
      *
-     * @param strDate
-     * @return
+     * @param strDate 格式 yyyy-MM-dd HH:mm:ss
+     * @return 返回yyyy-MM-dd格式字符串
      */
     public static String formatDate(String strDate) {
         return df_year_day.format(parseNormalTime(strDate));
@@ -172,7 +179,13 @@ public class DateUtils {
         }
     }
 
-    //转换时间类型
+    /**
+     * 转换时间类型
+     *
+     * @param format 希望转换的格式
+     * @param time   对应格式的时间字符串
+     * @return
+     */
     public static Date parseTime(String format, String time) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.CHINA);
         try {

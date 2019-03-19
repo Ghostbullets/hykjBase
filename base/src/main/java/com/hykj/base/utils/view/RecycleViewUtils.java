@@ -18,7 +18,7 @@ public class RecycleViewUtils {
 
     /**
      * 用于控制RecycleView的高度
-     * 请在设置了适配器并且获取到数据以后调用该方法
+     * 请在设置了适配器并且获取到数据以后调用该方法(注:xml中RecycleView需要设置为固定值，如果设置为wrap则方法可能无效)
      * int maximumHeight=(屏幕高度-它的父控件中除了它以外的其他所有子控件的高度)
      * int measureHeight=RecycleView的所有item的总高度
      * 设置RecycleView的最大高度
@@ -46,35 +46,27 @@ public class RecycleViewUtils {
                     View child = parent.getChildAt(i);
                     if (child == rv) {
                         if (itemCount > 0) {
-                            View childAt = rv.getChildAt(0);
-                            if (childAt != null) {
-                                measuredHeight = childAt.getMeasuredHeight();
-                                if (measuredHeight <= 0) {
-                                    childAt.measure(-1, -1);
-                                    measuredHeight = childAt.getMeasuredHeight();
+                            for (int j = 0; j < rv.getChildCount(); j++) {
+                                View childAt = rv.getChildAt(j);
+                                if (childAt != null) {
+                                    measuredHeight += getViewHeightWithMargin(childAt);
                                 }
                             }
                         }
                     } else {
-                        maximumHeight -= child.getMeasuredHeight();
+                        maximumHeight -= getViewHeightWithMargin(child);
                     }
                 }
                 for (View view : views) {
-                    int height = view.getMeasuredHeight();
-                    if (height <= 0) {
-                        view.measure(-1, -1);
-                        height = view.getMeasuredHeight();
-                    }
-                    maximumHeight -= height;
+                    maximumHeight -= getViewHeightWithMargin(view);
                 }
                 if (rv.getItemDecorationCount() > 0) {
                     DividerItemDecoration itemDecoration = (DividerItemDecoration) rv.getItemDecorationAt(0);
                     Drawable drawable = (Drawable) ReflectionUtils.getFieldValue(itemDecoration, "mDivider");
                     if (drawable != null) {
-                        measuredHeight += drawable.getIntrinsicHeight();
+                        measuredHeight += drawable.getIntrinsicHeight() * itemCount;
                     }
                 }
-                measuredHeight = measuredHeight * itemCount;
                 maximumHeight -= offsetSizeHeight;//减去偏差值
                 ViewGroup.LayoutParams params = rv.getLayoutParams();
                 if (measuredHeight > maximumHeight) {
@@ -85,5 +77,18 @@ public class RecycleViewUtils {
                 rv.setLayoutParams(params);
             }
         });
+    }
+
+    public static int getViewHeightWithMargin(View view) {
+        int height = view.getMeasuredHeight();
+        if (height <= 0) {
+            view.measure(-1, -1);
+            height = view.getMeasuredHeight();
+        }
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            height = height + params.topMargin + params.bottomMargin;
+        }
+        return height;
     }
 }
