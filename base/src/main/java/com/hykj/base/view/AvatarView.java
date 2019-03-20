@@ -89,8 +89,8 @@ public class AvatarView extends AppCompatImageView {
             mCornerRadii = new float[]{mRadiusLeftTop, mRadiusLeftTop, mRadiusRightTop, mRadiusRightTop, mRadiusRightBottom, mRadiusRightBottom, mRadiusLeftBottom, mRadiusLeftBottom};
 
             mRadius = a.getDimensionPixelSize(R.styleable.AvatarView_radius, 0);
-            mBorderColor = a.getColor(R.styleable.AvatarView_borderColor, -1);
-            mBorderWidth = a.getDimensionPixelSize(R.styleable.AvatarView_borderWidth, 0);
+            mBorderColor = a.getColor(R.styleable.AvatarView_avatarBorderColor, -1);
+            mBorderWidth = a.getDimensionPixelSize(R.styleable.AvatarView_avatarBorderWidth, 0);
             mShapeType = a.getInt(R.styleable.AvatarView_shapeType, ShapeType.CIRCLE);
             a.recycle();
         }

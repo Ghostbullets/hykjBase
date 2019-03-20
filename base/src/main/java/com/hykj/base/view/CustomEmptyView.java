@@ -50,14 +50,14 @@ public class CustomEmptyView extends LinearLayout {
         TintTypedArray a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.CustomEmptyView, defStyleAttr, 0);
 
         int emptyIconId = a.getResourceId(R.styleable.CustomEmptyView_emptyIcon, -1);
-        emptyText = a.getString(R.styleable.CustomEmptyView_text);
+        emptyText = a.getString(R.styleable.CustomEmptyView_emptyText);
         netWorkErrorText = a.getString(R.styleable.CustomEmptyView_netWorkErrorText);
         setEmptyViewInfo(emptyIconId, emptyText);
 
-        int textColor = a.getColor(R.styleable.CustomEmptyView_textColor, getResources().getColor(R.color.gray_a8));
+        int textColor = a.getColor(R.styleable.CustomEmptyView_emptyTextColor, getResources().getColor(R.color.gray_a8));
         setTextColor(textColor);
 
-        int textSize = a.getDimensionPixelSize(R.styleable.CustomEmptyView_textSize, sp2px(context, TEXT_SIZE));
+        int textSize = a.getDimensionPixelSize(R.styleable.CustomEmptyView_emptyTextSize, sp2px(context, TEXT_SIZE));
         setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
         a.recycle();
