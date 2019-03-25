@@ -10,16 +10,17 @@ import java.util.List;
 
 public abstract class LayoutAdapter<T> {
     private List<T> mDatas;
-    private @LayoutRes int resId;
+    private @LayoutRes
+    int resId;
     private OnDataChangedListener mOnDataChangedListener;
 
     public LayoutAdapter(List<T> mDatas, int resId) {
-        this.mDatas = mDatas;
+        this.mDatas = mDatas == null ? new ArrayList<T>() : mDatas;
         this.resId = resId;
     }
 
-    public LayoutAdapter(T[] datas,int resId) {
-        mDatas = new ArrayList<>(Arrays.asList(datas));
+    public LayoutAdapter(int resId, T[] datas) {
+        mDatas = datas == null ? new ArrayList<T>() : new ArrayList<>(Arrays.asList(datas));
         this.resId = resId;
     }
 

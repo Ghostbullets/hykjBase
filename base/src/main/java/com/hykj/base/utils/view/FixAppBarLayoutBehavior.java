@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
  * 最后翻找 google 的时候发现这是 google 在修复上个版本嵌套滑动的时候引进来的新 bug。。。
  */
 public class FixAppBarLayoutBehavior extends AppBarLayout.Behavior {
-    private OverScroller mScroller;
+    private OverScroller scroller;
 
     public FixAppBarLayoutBehavior() {
         super();
@@ -28,13 +28,13 @@ public class FixAppBarLayoutBehavior extends AppBarLayout.Behavior {
     }
 
     private void getParentScroller(Context context) {
-        if (mScroller != null) return;
-        mScroller = new OverScroller(context);
+        if (scroller != null) return;
+        scroller = new OverScroller(context);
         try {
-            Class<?> reflexClass = getClass().getSuperclass().getSuperclass();//得到当前类的父类的父类，即HeaderBehavior
-            Field fieldScroller = reflexClass.getDeclaredField("mScroller");
+            Class<?> reflexClass = getClass().getSuperclass().getSuperclass().getSuperclass();//得到当前类的父类的父类，即HeaderBehavior
+            Field fieldScroller = reflexClass.getDeclaredField("scroller");
             fieldScroller.setAccessible(true);
-            fieldScroller.set(this, mScroller);
+            fieldScroller.set(this, scroller);
         } catch (Exception e) {
         }
     }
@@ -44,8 +44,8 @@ public class FixAppBarLayoutBehavior extends AppBarLayout.Behavior {
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, final View target, int dx, int dy, int[] consumed, int type) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
         stopNestedScrollIfNeeded(dy, child, target, type);
-        if (mScroller != null) { //当recyclerView 做好滑动准备的时候 直接干掉Appbar的滑动
-            if (mScroller.computeScrollOffset()) mScroller.abortAnimation();
+        if (scroller != null) { //当recyclerView 做好滑动准备的时候 直接干掉Appbar的滑动
+            if (scroller.computeScrollOffset()) scroller.abortAnimation();
         }
     }
 

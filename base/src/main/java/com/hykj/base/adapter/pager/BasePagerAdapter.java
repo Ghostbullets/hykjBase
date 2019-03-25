@@ -66,6 +66,10 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
         return mCurrentView;
     }
 
+    public T getItem(int position) {
+        return mDatas.get(position);
+    }
+
     protected abstract void convert(ViewHolder holder, T t, int position);
 
     protected void destroyItemEx(ViewGroup container, int position, View view) {
@@ -77,5 +81,21 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
 
     public interface OnItemClickListener {
         void OnItemClick(BasePagerAdapter adapter, View view, int position);
+    }
+
+    /**
+     * 导入数据
+     *
+     * @param data    新数据
+     * @param isClear 是否清空原有数据
+     */
+    public void reloadListView(List<T> data, boolean isClear) {
+        if (isClear) {
+            this.mDatas.clear();
+        }
+        if (data != null) {
+            this.mDatas.addAll(data);
+        }
+        notifyDataSetChanged();
     }
 }

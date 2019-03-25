@@ -1,8 +1,8 @@
 package com.hykj.base.adapter;
 
 public class LayoutItem {
-    int type;
-    int layoutId;
+    private int type;
+    private int layoutId;
 
     public int getType() {
         return this.type;
