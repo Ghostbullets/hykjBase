@@ -21,6 +21,7 @@ public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerV
     protected View mView;
     protected int mItemLayoutId;
     protected OnItemClickListener mListener;
+    protected OnItemLongClickListener mLongClickListener;
 
     public BaseAdapter(Context context, List<T> datas, int layoutResId) {
         this.mContext = context;
@@ -32,7 +33,7 @@ public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerV
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mView = LayoutInflater.from(this.mContext).inflate(mItemLayoutId, parent, false);
-        return new BaseViewHolder(this, mView, mListener);
+        return new BaseViewHolder(this, mView, mListener, mLongClickListener);
     }
 
     @Override
@@ -80,5 +81,13 @@ public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerV
 
     public interface OnItemClickListener {
         void OnItemClick(BaseAdapter adapter, View view, int position);
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.mLongClickListener = onItemLongClickListener;
+    }
+
+    public interface OnItemLongClickListener {
+        void OnItemLongClick(BaseAdapter adapter, View view, int position);
     }
 }

@@ -22,6 +22,7 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     protected List<T> mDatas;
     private final int mLayoutId;
     private OnItemClickListener mListener;
+    private OnItemLongClickListener onItemLongClickListener;
     private LinkedList<View> mViews = new LinkedList<>();//回收利用View
 
     public BasePagerAdapter(Context context, List<T> datas, int layoutId) {
@@ -43,7 +44,7 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        ViewHolder holder = ViewHolder.get(mContext, mViews, mLayoutId, position, this, mListener);
+        ViewHolder holder = ViewHolder.get(mContext, mViews, mLayoutId, position, this, mListener, onItemLongClickListener);
         this.convert(holder, this.mDatas.get(position), position);
         container.addView(holder.getContentView());
         return holder.getContentView();
@@ -81,6 +82,14 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
 
     public interface OnItemClickListener {
         void OnItemClick(BasePagerAdapter adapter, View view, int position);
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
+
+    public interface OnItemLongClickListener {
+        void OnItemLongClick(BasePagerAdapter adapter, View view, int position);
     }
 
     /**

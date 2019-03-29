@@ -22,7 +22,7 @@ public class ViewHolder {
     private View mConvertView;
     private SparseArray<View> mViews;
 
-    public ViewHolder(Context context, int layoutId, int position, final BasePagerAdapter adapter, final BasePagerAdapter.OnItemClickListener listener) {
+    public ViewHolder(Context context, int layoutId, int position, final BasePagerAdapter adapter, final BasePagerAdapter.OnItemClickListener listener, final BasePagerAdapter.OnItemLongClickListener onItemLongClickListener) {
         this.mPosition = position;
         this.mViews = new SparseArray<>();
         this.mConvertView = LayoutInflater.from(context).inflate(layoutId, null);
@@ -34,10 +34,18 @@ public class ViewHolder {
                     listener.OnItemClick(adapter, mConvertView, mPosition);
             }
         });
+        this.mConvertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (onItemLongClickListener != null)
+                    onItemLongClickListener.OnItemLongClick(adapter, mConvertView, mPosition);
+                return onItemLongClickListener != null;
+            }
+        });
     }
 
-    public static ViewHolder get(Context context, LinkedList<View> mViews, int layoutId, int position, BasePagerAdapter adapter, BasePagerAdapter.OnItemClickListener listener) {
-        return mViews.size() > 0 ? (ViewHolder) mViews.removeFirst().getTag() : new ViewHolder(context, layoutId, position, adapter, listener);
+    public static ViewHolder get(Context context, LinkedList<View> mViews, int layoutId, int position, BasePagerAdapter adapter, BasePagerAdapter.OnItemClickListener listener, BasePagerAdapter.OnItemLongClickListener onItemLongClickListener) {
+        return mViews.size() > 0 ? (ViewHolder) mViews.removeFirst().getTag() : new ViewHolder(context, layoutId, position, adapter, listener, onItemLongClickListener);
     }
 
     public ViewHolder setText(int viewId, CharSequence text) {
