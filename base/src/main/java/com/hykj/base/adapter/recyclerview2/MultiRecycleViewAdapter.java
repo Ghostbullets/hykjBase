@@ -30,7 +30,7 @@ public abstract class MultiRecycleViewAdapter<T> extends BaseAdapter<T, BaseView
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(mContext).inflate(mLayoutArray.get(viewType), parent, false);
-        return new BaseViewHolder(this,itemView, mListener);
+        return new BaseViewHolder(this,itemView, mListener,mLongClickListener);
     }
 
     @Override
