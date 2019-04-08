@@ -20,7 +20,7 @@ public abstract class LayoutAdapter<T> {
     }
 
     public LayoutAdapter(int resId, T[] datas) {
-        mDatas = datas == null ? new ArrayList<T>() : new ArrayList<>(Arrays.asList(datas));
+        mDatas = datas == null || datas.length == 0 ? new ArrayList<T>() : new ArrayList<>(Arrays.asList(datas));
         this.resId = resId;
     }
 
@@ -38,7 +38,8 @@ public abstract class LayoutAdapter<T> {
     }
 
     public void notifyDataChanged() {
-        mOnDataChangedListener.onChanged();
+        if (mOnDataChangedListener != null)
+            mOnDataChangedListener.onChanged();
     }
 
     public T getItem(int position) {
