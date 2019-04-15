@@ -32,7 +32,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        isViewCreated=true;
+        isViewCreated = true;
         init();
     }
 
@@ -57,6 +57,24 @@ public abstract class BaseFragment extends Fragment {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     protected void setTranslucentStatus(boolean on) {
 
+    }
+
+    /**
+     * 设置标题栏图标颜色,android6.0以上才有用
+     *
+     * @param setDark 是否设置为黑色
+     */
+    public void setStatusIconColor(boolean setDark) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = mActivity.getWindow().getDecorView();
+            int vis = decorView.getSystemUiVisibility();
+            if (setDark) {
+                vis |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            } else {
+                vis &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            decorView.setSystemUiVisibility(vis);
+        }
     }
 
     /**
