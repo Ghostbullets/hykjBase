@@ -16,6 +16,7 @@
             android:theme="@style/translucent" />
         <activity android:name=".base.RichTextWebViewActivity" />
         <activity android:name=".base.BaseWebViewActivity" />
+        <activity android:name=".view.activity.PreviewImgActivity"/>
     </application>
 
 </manifest>
