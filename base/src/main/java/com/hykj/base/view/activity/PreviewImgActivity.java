@@ -89,8 +89,12 @@ public class PreviewImgActivity extends TitleActivity {
                         finish();
                     }
                 });
-                itemView.setOnLongClickListener(onLongClickListener);
-                itemView.setTag(position);
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        return true;
+                    }
+                });
                 itemView.resetScale();
             }
         };
