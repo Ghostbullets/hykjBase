@@ -126,6 +126,13 @@ public class NumEditMathUtils {
             throw new RuntimeException("最小值不能大于最大值");
         this.MIN_NUM = minNum;
         this.MAX_NUM = maxNum;
+        if (curNum < MIN_NUM || curNum > MAX_NUM) {
+            if (curNum < MIN_NUM)
+                curNum = MIN_NUM;
+            if (curNum > MAX_NUM)
+                curNum = MAX_NUM;
+            updateNumSelection();
+        }
         return this;
     }
 
@@ -134,8 +141,14 @@ public class NumEditMathUtils {
     }
 
     public NumEditMathUtils setCurNum(int curNum) {
-        this.curNum = curNum;
-        updateNumSelection();
+        if (curNum < MIN_NUM)
+            curNum = MIN_NUM;
+        if (curNum > MAX_NUM)
+            curNum = MAX_NUM;
+        if (this.curNum != curNum) {
+            this.curNum = curNum;
+            updateNumSelection();
+        }
         return this;
     }
 

@@ -81,8 +81,17 @@ public class NumberMathUtils {
     }
 
     public NumberMathUtils setMinOrMaxNum(int minNum, int maxNum) {
+        if (minNum > maxNum)
+            throw new RuntimeException("最小值不能大于最大值");
         this.MIN_NUM = minNum;
         this.MAX_NUM = maxNum;
+        if (curNum < MIN_NUM || curNum > MAX_NUM) {
+            if (curNum < MIN_NUM)
+                curNum = MIN_NUM;
+            if (curNum > MAX_NUM)
+                curNum = MAX_NUM;
+            changeNumber(curNum, true);
+        }
         return this;
     }
 
@@ -95,6 +104,10 @@ public class NumberMathUtils {
     }
 
     public NumberMathUtils setCurNum(int curNum, boolean isChange) {
+        if (curNum < MIN_NUM)
+            curNum = MIN_NUM;
+        if (curNum > MAX_NUM)
+            curNum = MAX_NUM;
         changeNumber(curNum, isChange);
         return this;
     }
