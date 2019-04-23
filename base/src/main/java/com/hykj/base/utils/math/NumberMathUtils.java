@@ -100,7 +100,7 @@ public class NumberMathUtils {
     }
 
     public NumberMathUtils setCurNum(int curNum) {
-        return setCurNum(curNum, false);
+        return setCurNum(curNum, true);
     }
 
     public NumberMathUtils setCurNum(int curNum, boolean isChange) {
@@ -108,7 +108,7 @@ public class NumberMathUtils {
             curNum = MIN_NUM;
         if (curNum > MAX_NUM)
             curNum = MAX_NUM;
-        changeNumber(curNum, isChange);
+        changeNumber(curNum, curNum != this.curNum && isChange);
         return this;
     }
 
