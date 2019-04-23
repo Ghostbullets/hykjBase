@@ -46,17 +46,17 @@ public class NumberMathUtils {
                 new EditNumberDialogFragment().setCurNum(curNum).setListener(new EditNumberDialogFragment.OnConfirmListener() {
                     @Override
                     public void OnConfirm(int curNum) {
-                        changeNumber(curNum);
+                        changeNumber(curNum, true);
                     }
                 }).show(activity.getSupportFragmentManager(), "EditNumberDialogFragment");
             }
         });
     }
 
-    private void changeNumber(int num) {
+    private void changeNumber(int num, boolean isChange) {
         curNum = num;
         tvNum.setText(String.valueOf(curNum));
-        if (mListener != null)
+        if (isChange && mListener != null)
             mListener.onNumChange(curNum);
     }
 
@@ -71,7 +71,7 @@ public class NumberMathUtils {
             else if (!isSub && curNum < MAX_NUM)
                 curNum++;
             if (temp != curNum) {
-                changeNumber(curNum);
+                changeNumber(curNum, true);
             }
         }
     };
@@ -91,7 +91,11 @@ public class NumberMathUtils {
     }
 
     public NumberMathUtils setCurNum(int curNum) {
-        this.curNum = curNum;
+        return setCurNum(curNum, false);
+    }
+
+    public NumberMathUtils setCurNum(int curNum, boolean isChange) {
+        changeNumber(curNum, isChange);
         return this;
     }
 

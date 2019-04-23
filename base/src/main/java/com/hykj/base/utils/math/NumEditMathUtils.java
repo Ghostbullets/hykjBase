@@ -84,7 +84,7 @@ public class NumEditMathUtils {
             if (empty) {
                 updateNumSelection();
             }
-            if (mListener != null && !(empty && temp == 1))
+            if (mListener != null && !(empty && temp == 1))//原来的值为1，并且删除导致数字还是1的情况下不通知
                 mListener.onNumChange(curNum);
         }
 
@@ -124,10 +124,6 @@ public class NumEditMathUtils {
     public NumEditMathUtils setMinOrMaxNum(int minNum, int maxNum) {
         if (minNum > maxNum)
             throw new RuntimeException("最小值不能大于最大值");
-        if (minNum < 0)
-            minNum = 0;
-        if (maxNum < 1)
-            maxNum = 1;
         this.MIN_NUM = minNum;
         this.MAX_NUM = maxNum;
         return this;
@@ -138,8 +134,6 @@ public class NumEditMathUtils {
     }
 
     public NumEditMathUtils setCurNum(int curNum) {
-        if (curNum < 0)
-            curNum = 0;
         this.curNum = curNum;
         updateNumSelection();
         return this;
