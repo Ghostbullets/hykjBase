@@ -82,7 +82,7 @@ public class NumberMathUtils {
 
     public NumberMathUtils setMinOrMaxNum(int minNum, int maxNum) {
         if (minNum > maxNum)
-            throw new RuntimeException("最小值不能大于最大值");
+            throw new RuntimeException("The minimum cannot be greater than the maximum");
         this.MIN_NUM = minNum;
         this.MAX_NUM = maxNum;
         if (curNum < MIN_NUM || curNum > MAX_NUM) {

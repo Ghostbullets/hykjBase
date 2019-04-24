@@ -23,7 +23,7 @@ public class EditTextUtils {
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 if (source.equals(" "))
                     return "";
-                if (dest.length() == 0 && source.equals(".")) {//输入的第一个字符是小数点,直接返回0.1
+                if (dest.length() == 0 && source.equals(".")) {//输入的第一个字符是小数点,直接返回0.
                     return "0.";
                 }
                 if (dest.length() == 1 && dest.toString().equals("0") && source.equals("0")) {//连续输入2个0，直接返回空字符串
