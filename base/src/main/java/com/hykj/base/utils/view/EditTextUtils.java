@@ -23,14 +23,20 @@ public class EditTextUtils {
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 if (source.equals(" "))
                     return "";
-                if (dest.length() == 0 && source.equals(".")) {//输入的第一个字符是小数点,直接返回0.
-                    return "0.";
+                if (source.toString().contains(".")) {
+                    if (source.equals(".") && dest.length() == 0)//输入的第一个字符是小数点,直接返回0.
+                        return "0.";
+                    if (dest.toString().contains("."))
+                        return "";
                 }
                 if (dest.length() == 1 && dest.toString().equals("0") && source.equals("0")) {//连续输入2个0，直接返回空字符串
                     return "";
                 }
+                if (dstart == 0 && source.toString().indexOf("0") == 0 && dest.length() > 0) {//已经有数字的情况下不允许在第0个位置添加0
+                    return "";
+                }
                 String[] split = dest.toString().split("\\.");
-                if (split.length > 1) {
+                if (split.length > 1 && dest.toString().indexOf(".") < dstart) {
                     String decimal = split[1];
                     if (decimal.length() == keepPlace) {//输入框小数的位数
                         return "";

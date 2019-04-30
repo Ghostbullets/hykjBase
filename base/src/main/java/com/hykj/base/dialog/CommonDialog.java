@@ -1,6 +1,7 @@
 package com.hykj.base.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -30,6 +31,7 @@ public class CommonDialog extends DialogFragment {
     private CharSequence mPositiveButtonText;
     private CharSequence mNegativeButtonText;
     private OnSelectClickListener mListener;
+    private boolean isCancel;
 
     public CommonDialog setData(CharSequence mTitle, CharSequence mMessage, CharSequence mPositiveButtonText, CharSequence mNegativeButtonText) {
         this.mTitle = mTitle;
@@ -97,9 +99,8 @@ public class CommonDialog extends DialogFragment {
         public void onClickSub(View v) {
             int i = v.getId();
             if (i == R.id.tv_cancel) {
+                isCancel = true;
                 dismiss();
-                if (mListener != null)
-                    mListener.onCancel(v);
             } else if (i == R.id.tv_confirm) {
                 dismiss();
                 if (mListener != null)
@@ -107,6 +108,15 @@ public class CommonDialog extends DialogFragment {
             }
         }
     };
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (mListener != null && isCancel) {
+            mListener.onCancel(null);
+            isCancel = false;
+        }
+    }
 
     public interface OnSelectClickListener {
         void onConfirm(View v);

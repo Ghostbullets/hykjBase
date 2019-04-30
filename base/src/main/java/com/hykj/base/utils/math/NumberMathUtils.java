@@ -43,7 +43,7 @@ public class NumberMathUtils {
         this.tvNum.setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {
-                new EditNumberDialogFragment().setCurNum(curNum).setListener(new EditNumberDialogFragment.OnConfirmListener() {
+                new EditNumberDialogFragment().setMinOrMaxNum(MIN_NUM, MAX_NUM).setCurNum(curNum).setListener(new EditNumberDialogFragment.OnConfirmListener() {
                     @Override
                     public void OnConfirm(int curNum) {
                         changeNumber(curNum, true);

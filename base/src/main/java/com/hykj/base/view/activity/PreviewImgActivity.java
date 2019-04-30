@@ -82,6 +82,7 @@ public class PreviewImgActivity extends TitleActivity {
             @Override
             protected void convert(ViewHolder holder, String url, int position) {
                 ZoomImageView itemView = holder.getView(R.id.zoom_view);
+                itemView.initScale();
                 manager.load(url).into(itemView);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -95,7 +96,6 @@ public class PreviewImgActivity extends TitleActivity {
                         return true;
                     }
                 });
-                itemView.resetScale();
             }
         };
     }
@@ -110,8 +110,15 @@ public class PreviewImgActivity extends TitleActivity {
 
         @Override
         public void onPageSelected(int position) {//选中新页面时会调用该方法
-            ZoomImageView view = viewPager.findViewWithTag(currentPosition);
-            if (view != null) view.resetScale();
+            if (viewPager.getAdapter() != null) {
+                View convertView = ((BasePagerAdapter) viewPager.getAdapter()).getPrimaryItem();
+                if (convertView != null) {
+                    ZoomImageView view = convertView.findViewById(R.id.zoom_view);
+                    if (view != null) {
+                        view.resetScale();
+                    }
+                }
+            }
             setPageNumber(position);
         }
 

@@ -2,16 +2,20 @@ package com.hykj.base.utils.text;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
+import android.util.TypedValue;
 
 import com.hykj.base.bean.DistanceInfo;
+import com.hykj.base.utils.DisplayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +95,76 @@ public class SpanUtils {
         SpannableStringBuilder builder = new SpannableStringBuilder(contrastStr);
         for (DistanceInfo info : distanceInfos) {
             builder.setSpan(new RelativeSizeSpan(proportion), info.start, info.end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        return builder;
+    }
+
+    /**
+     * @param sequence 文本
+     * @param size     设置文字大小为多少sp
+     * @param start    开始缩放位置
+     * @param end      结束缩放位置
+     * @return
+     */
+    public static CharSequence getAbsoluteSizeSpan(@NonNull CharSequence sequence, @IntRange(from = 10) int size, int start, int end) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(sequence);
+        builder.setSpan(new AbsoluteSizeSpan(DisplayUtils.size2px(size, TypedValue.COMPLEX_UNIT_SP)), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return builder;
+    }
+
+    /**
+     * 设置字体大小
+     *
+     * @param index     设置哪一段字符串的文字大小
+     * @param size      设置文字大小为多少sp
+     * @param sequences 字符串集合
+     * @return
+     */
+    public static CharSequence getAbsoluteSizeSpan(int index, @IntRange(from = 10) int size, @NonNull CharSequence... sequences) {
+        if (index < 0 || index > sequences.length - 1)
+            throw new RuntimeException("index must greater than or equal 0,less than sequences.length-1");
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < sequences.length; i++) {
+            if (index == i) {
+                start = builder.length();
+            }
+            builder.append(sequences[i]);
+            if (index == i) {
+                end = builder.length();
+                break;
+            }
+        }
+        if (start >= 0 && start < end) {
+            builder.setSpan(new AbsoluteSizeSpan(DisplayUtils.size2px(size, TypedValue.COMPLEX_UNIT_SP)), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        return builder;
+    }
+
+    /**
+     * @param absoluteSizeStr 要设置字体大小的字符串片段
+     * @param size            设置文字大小为多少sp
+     * @param contrastStr     要拿来对照的字符串
+     * @return
+     */
+    public static CharSequence getAbsoluteSizeSpan(String absoluteSizeStr, @IntRange(from = 10) int size, @NonNull String contrastStr) {
+        if (TextUtils.isEmpty(absoluteSizeStr))
+            return contrastStr;
+        List<DistanceInfo> distanceInfos = new ArrayList<>();
+        int length = absoluteSizeStr.length();
+        int end = 0;
+        while (end < contrastStr.length()) {
+            int index = contrastStr.indexOf(absoluteSizeStr, end);
+            if (index == -1) {
+                break;
+            }
+            end += index + length;
+            distanceInfos.add(new DistanceInfo(index, end, length));
+        }
+        SpannableStringBuilder builder = new SpannableStringBuilder(contrastStr);
+        for (DistanceInfo info : distanceInfos) {
+            builder.setSpan(new AbsoluteSizeSpan(DisplayUtils.size2px(TypedValue.COMPLEX_UNIT_SP, size)), info.start, info.end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return builder;
     }

@@ -267,10 +267,12 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
         initScale = scale;
         mMaxScale = ratio * initScale;
         mMinScale = (float) Math.sqrt(initScale * mMaxScale);
-        //将图片移动到屏幕中央
-        mScaleMatrix.postTranslate((width - dw) / 2, (height - dh) / 2);
-        mScaleMatrix.postScale(scale, scale, width / 2, height / 2);
-        setImageMatrix(mScaleMatrix);
+        if (getScale() != scale) {
+            //将图片移动到屏幕中央
+            mScaleMatrix.postTranslate((width - dw) / 2, (height - dh) / 2);
+            mScaleMatrix.postScale(scale, scale, width / 2, height / 2);
+            setImageMatrix(mScaleMatrix);
+        }
 
         getViewTreeObserver().removeOnGlobalLayoutListener(this);
     }
@@ -331,7 +333,7 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
     private boolean isParentInterceptTouchEvent(float dx,float dy) {
         RectF rectF = getMatrixRectF();
         if ((rectF.left == 0 && dx > 0) || (rectF.right == getWidth() && dx < 0) || rectF.width() < getWidth()
-                || (rectF.top == 0 && dy > 0) || (rectF.bottom == getWidth() && dy < 0) || rectF.height() < getHeight()) {
+                /*|| (rectF.top == 0 && dy > 0) || (rectF.bottom == getWidth() && dy < 0) || rectF.height() < getHeight()*/) {
             ViewParent parent = getParent();
             while (parent != null && !(parent instanceof ViewPager)) {
                 parent = parent.getParent();
@@ -433,5 +435,12 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
         float scale = getScale();
         if (scale != initScale)
             ZoomImageView.this.postDelayed(new AutoScaleRunnable(initScale, getWidth() / 2, getHeight() / 2), 16);
+    }
+
+    public void initScale() {
+        if (initScale != 1.0f) {
+            mScaleMatrix.setScale(1.0f, 1.0f, getWidth() / 2, getHeight() / 2);
+            setImageMatrix(mScaleMatrix);
+        }
     }
 }
