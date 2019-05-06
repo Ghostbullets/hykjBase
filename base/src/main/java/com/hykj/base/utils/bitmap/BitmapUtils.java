@@ -14,10 +14,13 @@ import android.provider.MediaStore;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.hykj.base.utils.ContextKeep;
 import com.hykj.base.utils.storage.FileUtil;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * 存取头像工具类---以文件形式存放
@@ -77,6 +80,43 @@ public class BitmapUtils {
     }
 
     /**
+     * @param bitmap         原图
+     * @param isPngFormat    是否压缩成PNG格式图片
+     * @param targetByteSize 目标byte大小，单位B
+     * @param recycle        是否释放原图资源
+     * @return
+     */
+    public static byte[] decodeQualityByteForBitmap(Bitmap bitmap, boolean isPngFormat, int targetByteSize, boolean recycle) {
+        if (bitmap == null)
+            return null;
+        if (targetByteSize <= 0)
+            targetByteSize = 10 * 1024;
+        int quality = 100;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        do {
+            baos.reset();
+            bitmap.compress(isPngFormat ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, quality, baos);
+            quality -= 10;
+            if (quality <= 0)
+                break;
+            Log.e(BitmapUtils.class.getSimpleName(), "当前压缩质量为" + quality + "，压缩后的大小为" + baos.toByteArray().length / 1024 + "KB");
+        } while (baos.toByteArray().length > targetByteSize);
+        if (recycle && !bitmap.isRecycled())
+            bitmap.recycle();
+        return baos.toByteArray();
+    }
+
+    public static byte[] decodeQualityByteForPath(String path, int targetByteSize, boolean recycle) {
+        if (TextUtils.isEmpty(path))
+            return null;
+        try {
+            return decodeQualityByteForBitmap(BitmapFactory.decodeFile(path), "png".equals(path.substring(path.lastIndexOf(".") + 1)), targetByteSize, recycle);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * 按尺寸大小缩放图片并返回
      *
      * @param bitmap        原图
@@ -114,6 +154,35 @@ public class BitmapUtils {
     public enum FitBitmapType {
         WIDTH//以宽度为准
         , HEIGHT//以高度为准
+    }
+
+    /**
+     * 按尺寸大小缩放图片并返回
+     *
+     * @param bitmap       原图
+     * @param targetWidth  想要的尺寸宽
+     * @param targetHeight 想要的尺寸高
+     * @param recycle      是否释放原图资源
+     * @return
+     */
+    public static Bitmap scaleImage(Bitmap bitmap, float targetWidth, float targetHeight, boolean recycle) {
+        if (bitmap == null)
+            return null;
+        // 获取图片宽和高
+        int oriWidth = bitmap.getWidth();
+        int oriHeight = bitmap.getHeight();
+        // 计算宽高缩放率
+        float scaleWidth = targetWidth / oriWidth;
+        float scaleHeight = targetHeight / oriHeight;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, oriWidth, oriHeight, matrix, true);
+
+        if (recycle && !bitmap.equals(newBitmap) && !bitmap.isRecycled())
+            bitmap.recycle();
+
+        return newBitmap;
     }
 
     /**
@@ -167,7 +236,6 @@ public class BitmapUtils {
         int SHRINK = 1;
         int MAGNIFY = 2;
     }
-
 
 
     public static Bitmap getScreenCapture(Activity activity) {
