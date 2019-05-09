@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -96,10 +101,10 @@ public class BitmapUtils {
         do {
             baos.reset();
             bitmap.compress(isPngFormat ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, quality, baos);
+            Log.e(BitmapUtils.class.getSimpleName(), "当前压缩质量为" + quality + "，压缩后的大小为" + baos.toByteArray().length / 1024 + "KB");
             quality -= 10;
             if (quality <= 0)
                 break;
-            Log.e(BitmapUtils.class.getSimpleName(), "当前压缩质量为" + quality + "，压缩后的大小为" + baos.toByteArray().length / 1024 + "KB");
         } while (baos.toByteArray().length > targetByteSize);
         if (recycle && !bitmap.isRecycled())
             bitmap.recycle();
@@ -114,6 +119,30 @@ public class BitmapUtils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 创建 bitmap宽、bitmap高的一个空的Bitmap对象，将bitmap的rectF矩阵内的内容书写到空的Bitmap对象的rectF矩阵中，
+     * 此时新的Bitmap宽高跟原来一样，需要使用Bitmap.createBitmap(bitmap,(int)rectF.left,(int)rectF.top,(int)rectF.width(),(int)rectF.height())来裁剪
+     *
+     * @param bitmap 原图
+     * @param rectF  要截取的圆角矩形位置信息
+     * @param rx     X轴方向圆角大小
+     * @param ry     Y轴方向圆角大小
+     * @return
+     */
+    public static Bitmap getRoundRectBitmap(Bitmap bitmap, RectF rectF, @FloatRange(from = 0) float rx, @FloatRange(from = 0) float ry) {
+        if (bitmap == null)
+            return null;
+        Bitmap roundRectBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(roundRectBitmap);
+        Paint bitmapPaint = new Paint();
+        BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        bitmapPaint.setShader(bitmapShader);
+        if (rectF == null)
+            rectF = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        canvas.drawRoundRect(rectF, rx, ry, bitmapPaint);
+        return roundRectBitmap;
     }
 
     /**
@@ -171,12 +200,13 @@ public class BitmapUtils {
         // 获取图片宽和高
         int oriWidth = bitmap.getWidth();
         int oriHeight = bitmap.getHeight();
-        // 计算宽高缩放率
-        float scaleWidth = targetWidth / oriWidth;
-        float scaleHeight = targetHeight / oriHeight;
-
         Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
+        if (oriWidth != targetWidth || oriHeight != targetHeight) {
+            // 计算宽高缩放率
+            float scaleWidth = targetWidth / oriWidth;
+            float scaleHeight = targetHeight / oriHeight;
+            matrix.postScale(scaleWidth, scaleHeight);
+        }
         Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, oriWidth, oriHeight, matrix, true);
 
         if (recycle && !bitmap.equals(newBitmap) && !bitmap.isRecycled())
