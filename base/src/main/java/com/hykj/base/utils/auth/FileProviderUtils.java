@@ -3,6 +3,8 @@ package com.hykj.base.utils.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -10,9 +12,12 @@ import android.provider.MediaStore;
 import android.support.annotation.StringDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * app间文件共享
@@ -67,6 +72,20 @@ public class FileProviderUtils {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, getUriForFile(fragment.getContext(), file));
         fragment.startActivityForResult(intent, requestCode);
+    }
+
+    private static void grantUriPermission(Activity activity, Uri uri, Intent intent) {
+        List<ResolveInfo> resolveInfos = activity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (resolveInfos.size() == 0) {
+            Toast.makeText(activity, "没有合适的相机应用程序", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Iterator<ResolveInfo> iterator = resolveInfos.iterator();
+        while (iterator.hasNext()) {
+            ResolveInfo resolveInfo = iterator.next();
+            String packageName = resolveInfo.activityInfo.packageName;
+            activity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
     }
 
     /**

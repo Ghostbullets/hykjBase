@@ -24,11 +24,20 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     private OnItemClickListener mListener;
     private OnItemLongClickListener onItemLongClickListener;
     private LinkedList<View> mViews = new LinkedList<>();//回收利用View
+    private boolean isRecycle = true;//是否回收利用View
+    private int mChildCount;
 
     public BasePagerAdapter(Context context, List<T> datas, int layoutId) {
         this.mContext = context;
         this.mDatas = datas == null ? new ArrayList<T>() : datas;
         this.mLayoutId = layoutId;
+    }
+
+    public BasePagerAdapter(Context context, List<T> datas, int layoutId, boolean isRecycle) {
+        this.mContext = context;
+        this.mDatas = datas == null ? new ArrayList<T>() : datas;
+        this.mLayoutId = layoutId;
+        this.isRecycle = isRecycle;
     }
 
     @Override
@@ -54,7 +63,8 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         destroyItemEx(container, position, (View) object);
         container.removeView((View) object);
-        mViews.addLast((View) object);
+        if (isRecycle)
+            mViews.addLast((View) object);
     }
 
     @Override
@@ -106,5 +116,20 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
             this.mDatas.addAll(data);
         }
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        mChildCount = getCount();
+        super.notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        if (mChildCount > 0) {//跟notifyDataSetChanged()方法组合，用于ViewPager不切换页面时调用返回POSITION_NONE刷新数据
+            mChildCount = 0;
+            return POSITION_NONE;
+        }
+        return super.getItemPosition(object);
     }
 }

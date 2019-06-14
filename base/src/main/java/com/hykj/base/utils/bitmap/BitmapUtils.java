@@ -58,13 +58,39 @@ public class BitmapUtils {
      * @return 缩小后的图片
      */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        //设置为true可以在解码的时候避免内存的分配，它会返回一个null的Bitmap，但是可以获取到 outWidth
-        BitmapFactory.decodeResource(res, resId, options);//获取到图片宽高类型等信息放到options中
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);//得到缩放比
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            //设置为true可以在解码的时候避免内存的分配，它会返回一个null的Bitmap，但是可以获取到 outWidth
+            BitmapFactory.decodeResource(res, resId, options);//获取到图片宽高类型等信息放到options中
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);//得到缩放比
+            options.inJustDecodeBounds = false;
+            return BitmapFactory.decodeResource(res, resId, options);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param bytes     图片字节数组
+     * @param reqWidth  想要的宽
+     * @param reqHeight 想要的高
+     * @return 缩小后的图片
+     */
+    public static Bitmap decodeSampledBitmapFromBytes(byte[] bytes, int reqWidth, int reqHeight) {
+        try {
+            if (bytes == null)
+                return null;
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            //设置为true可以在解码的时候避免内存的分配，它会返回一个null的Bitmap，但是可以获取到 outWidth
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);//获取到图片宽高类型等信息放到options中
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);//得到缩放比
+            options.inJustDecodeBounds = false;
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -74,14 +100,18 @@ public class BitmapUtils {
      * @return 缩小后的图片
      */
     public static Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
-        if (TextUtils.isEmpty(path))
+        try {
+            if (TextUtils.isEmpty(path))
+                return null;
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, options);//获取到图片宽高类型等信息放到options中
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);//得到缩放比
+            options.inJustDecodeBounds = false;
+            return BitmapFactory.decodeFile(path, options);
+        } catch (Exception e) {
             return null;
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);//获取到图片宽高类型等信息放到options中
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);//得到缩放比
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(path, options);
+        }
     }
 
     /**
