@@ -20,7 +20,7 @@ public class IntentUtils {
     public static void installApk(Context context, File file) {
         Intent installIntent = new Intent(Intent.ACTION_VIEW);
         installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             installIntent.setDataAndType(FileProviderUtils.getUriForFile(context, file), "application/vnd.android.package-archive");
             installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
