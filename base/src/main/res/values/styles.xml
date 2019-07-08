@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="CustomDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -21,5 +22,18 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+
+    <style name="style_Text_13sp_Color_Black66">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/black_66</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="style_Text_13sp_Color_Black33">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/black_33</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application android:networkSecurityConfig="@xml/network_security_config">
         <!-- android P 9.0适配问题-->
@@ -17,6 +18,9 @@
         <activity android:name=".base.RichTextWebViewActivity" />
         <activity android:name=".base.BaseWebViewActivity" />
         <activity android:name=".view.activity.PreviewImgActivity"/>
+
+        <!-- 注册更新服务 -->
+        <service android:name=".service.UpdateService"/>
     </application>
 
 </manifest>

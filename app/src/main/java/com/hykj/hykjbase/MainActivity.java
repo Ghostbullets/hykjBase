@@ -17,9 +17,15 @@ import android.widget.ImageView;
 
 import com.hykj.base.adapter.recyclerview2.BaseViewHolder;
 import com.hykj.base.adapter.recyclerview2.SimpleRecycleViewAdapter;
+import com.hykj.base.bean.AppVersionInfo;
+import com.hykj.base.bean.UpdateTransInfo;
+import com.hykj.base.dialog.UpdateVersionDialogFragment;
+import com.hykj.base.listener.OnConfirmClickListener;
 import com.hykj.base.listener.SingleOnClickListener;
+import com.hykj.base.service.UpdateService;
 import com.hykj.base.utils.DateUtils;
 import com.hykj.base.utils.DisplayUtils;
+import com.hykj.base.utils.IntentUtils;
 import com.hykj.base.utils.bitmap.BitmapUtils;
 import com.hykj.base.utils.storage.FileUtil;
 import com.hykj.base.utils.view.DividerGridItemDecoration;
@@ -30,6 +36,7 @@ import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView ivImg;
     private SimpleRecycleViewAdapter<String> contentAdapter;
     private List<String> contentList = new ArrayList<>();
+    private AppVersionInfo appVersionInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,25 +60,25 @@ public class MainActivity extends AppCompatActivity {
             /*    String outPath = FileUtil.getCacheFilePath(DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + ".png", FileUtil.FileType.IMG);
                 PickerImageActivity.start(MainActivity.this, REQ_PHOTO, outPath, false);
 */
-            new RxPermissions(MainActivity.this)
-                    .request(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA)
-                    .subscribe(new Consumer<Boolean>() {
-                        @Override
-                        public void accept(Boolean aBoolean) throws Exception {
-                            if (aBoolean){
-                                Matisse.from(MainActivity.this)
-                                        .choose(MimeType.ofAll())
-                                        .maxSelectable(9)
-                                        .originalEnable(true)
-                                        .spanCount(4)
-                                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                                        .thumbnailScale(0.5f)
-                                        .theme(com.hykj.base.R.style.Matisse_Zhihu)
-                                        .imageEngine(new MyGlideEngine())
-                                        .forResult(2);
+                new RxPermissions(MainActivity.this)
+                        .request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean aBoolean) throws Exception {
+                                if (aBoolean) {
+                                    Matisse.from(MainActivity.this)
+                                            .choose(MimeType.ofAll())
+                                            .maxSelectable(9)
+                                            .originalEnable(true)
+                                            .spanCount(4)
+                                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                                            .thumbnailScale(0.5f)
+                                            .theme(com.hykj.base.R.style.Matisse_Zhihu)
+                                            .imageEngine(new MyGlideEngine())
+                                            .forResult(2);
+                                }
                             }
-                        }
-                    });
+                        });
             }
         });
         for (int i = 0; i < 97; i++) {
@@ -84,6 +92,35 @@ public class MainActivity extends AppCompatActivity {
         //rvContent.addItemDecoration(new DividerGridItemDecoration(this,R.drawable.divider_yellow_h_10dp, R.drawable.divider_yellow_v_10dp,displayUtils.dp2px(10),displayUtils.sp2px(10)));
         rvContent.setLayoutManager(new GridLayoutManager(this, 5));
         rvContent.setAdapter(contentAdapter);
+        final File apkFile = new File(FileUtil.getCacheFilePath("智建无忧1.0.0.apk", FileUtil.FileType.FILE));
+        appVersionInfo = new AppVersionInfo("智建无忧1.0.0", "1.0.0", "基础库更新", "24MB",
+                "1.更新基础库，2更新UI", "2019-04-04 11:11:11", "http://pic32.nipic.com/20130810/7772606_170808427000_2.jpg", true);
+        new UpdateVersionDialogFragment()
+                .setData(appVersionInfo, apkFile.exists() ? "立即安装" : "立即更新", null)
+                .setOnSelectClickListener(new OnConfirmClickListener() {
+                    @Override
+                    public void onConfirm(View v) {
+                        new RxPermissions(MainActivity.this)
+                                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                .subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(Boolean aBoolean) throws Exception {
+                                        if (aBoolean) {
+                                            if (apkFile.exists()) {
+                                                IntentUtils.installApk(MainActivity.this, apkFile);
+                                            } else {
+                                                UpdateService.start(MainActivity.this, new UpdateTransInfo("智建无忧", "http://121.40.86.51:8088/project/zhijianwuyou/android.apk",
+                                                        null, false, "智建无忧1.0.0.apk", FileUtil.getFileTypePath(FileUtil.FileType.FILE)));
+                                            }
+                                        } else {
+                                            finish();
+                                        }
+                                    }
+                                });
+
+                    }
+                })
+                .show(getSupportFragmentManager(), "UpdateVersionDialogFragment");
     }
 
     private SimpleRecycleViewAdapter<String> createContentAdapter(List<String> list) {
