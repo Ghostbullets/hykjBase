@@ -8,4 +8,5 @@
     <string name="packet_size">包大小</string>
     <string name="update_time">更新时间</string>
     <string name="talk_to_you_later">下次再说</string>
+    <string name="Updated_instructions">更新说明:</string>
 </resources>

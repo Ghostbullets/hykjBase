@@ -49,7 +49,7 @@
         <TextView
             style="@style/style_Text_13sp_Color_Black33"
             android:layout_marginTop="15dp"
-            android:text="更新说明:" />
+            android:text="@string/Updated_instructions" />
 
         <TextView
             android:id="@+id/tv_update_content"
