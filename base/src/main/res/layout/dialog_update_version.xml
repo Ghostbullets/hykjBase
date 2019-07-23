@@ -72,7 +72,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="15dp"
-            android:text="下次再说"
+            android:text="@string/talk_to_you_later"
             android:textColor="@color/black_33"
             android:textSize="16sp" />
 

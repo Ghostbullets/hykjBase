@@ -45,24 +45,24 @@ public class UpdateVersionDialogFragment extends BaseDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View itemView = inflater.inflate(R.layout.dialog_update_version, container);
         ((TextView) itemView.findViewById(R.id.tv_title)).setText(versionInfo.versionTitle);//标题
-        ((TextView) itemView.findViewById(R.id.tv_version_name)).setText(String.format("版本:%s", versionInfo.versionName));//版本
-        ((TextView) itemView.findViewById(R.id.tv_update_content)).setText(StringUtils.getValueByDefault(versionInfo.updateContent, "暂无更新说明"));//更新内容
+        ((TextView) itemView.findViewById(R.id.tv_version_name)).setText(String.format("%s:%s", getResources().getString(R.string.versions),versionInfo.versionName));//版本
+        ((TextView) itemView.findViewById(R.id.tv_update_content)).setText(StringUtils.getValueByDefault(versionInfo.updateContent, getResources().getString(R.string.No_update_is_available)));//更新内容
 
         TextView tvVersionDesc = itemView.findViewById(R.id.tv_version_desc);//版本描述
         if (!TextUtils.isEmpty(versionInfo.versionDesc))
-            tvVersionDesc.setText(String.format("版本描述:%s", versionInfo.versionDesc));
+            tvVersionDesc.setText(String.format("%s:%s", getResources().getString(R.string.Version_described),versionInfo.versionDesc));
         else
             tvVersionDesc.setVisibility(View.GONE);
 
         TextView tvPackageSize = itemView.findViewById(R.id.tv_package_size);//包大小
         if (!TextUtils.isEmpty(versionInfo.packageSize))
-            tvPackageSize.setText(String.format("包大小:%s", versionInfo.packageSize));
+            tvPackageSize.setText(String.format("%s:%s", getResources().getString(R.string.packet_size),versionInfo.packageSize));
         else
             tvPackageSize.setVisibility(View.GONE);
 
         TextView tvUpdateTime = itemView.findViewById(R.id.tv_update_time);//更新时间
         if (!TextUtils.isEmpty(versionInfo.updateTime))
-            tvUpdateTime.setText(String.format("更新时间:%s", versionInfo.updateTime));
+            tvUpdateTime.setText(String.format("%s:%s", getResources().getString(R.string.update_time),versionInfo.updateTime));
         else
             tvUpdateTime.setVisibility(View.GONE);
 

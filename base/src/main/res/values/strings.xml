@@ -1,4 +1,11 @@
 <resources>
     <string name="behavior_appbar_layout">com.hykj.base.utils.view.FixAppBarLayoutBehavior</string>
     <string name="behavior_appbar_layout_can_drag">com.hykj.base.utils.view.FixCanDragAppBarLayoutBehavior</string>
+
+    <string name="versions">版本</string>
+    <string name="No_update_is_available">暂无更新说明</string>
+    <string name="Version_described">版本描述</string>
+    <string name="packet_size">包大小</string>
+    <string name="update_time">更新时间</string>
+    <string name="talk_to_you_later">下次再说</string>
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="behavior_appbar_layout">com.hykj.base.utils.view.FixAppBarLayoutBehavior</string>
+    <string name="behavior_appbar_layout_can_drag">com.hykj.base.utils.view.FixCanDragAppBarLayoutBehavior</string>
+
+    <string name="versions">versions</string>
+    <string name="No_update_is_available">No update is available</string>
+    <string name="Version_described">Version described</string>
+    <string name="packet_size">packet size</string>
+    <string name="update_time">update_time</string>
+    <string name="talk_to_you_later">talk to you later</string>
+</resources>
