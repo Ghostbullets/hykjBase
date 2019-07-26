@@ -3,6 +3,7 @@ package com.hykj.base.adapter.listview;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,7 @@ public class ViewHolder {
     }
 
 
-    public <T extends View> T getView(int viewId) {
+    public <T extends View> T getView(@IdRes int viewId) {
         View view = this.mViews.get(viewId);
         if (view == null) {
             view = this.mConvertView.findViewById(viewId);
@@ -43,25 +44,31 @@ public class ViewHolder {
         return (T) view;
     }
 
-    public ViewHolder setText(int viewId, CharSequence text) {
+    public ViewHolder setText(@IdRes int viewId, CharSequence text) {
         TextView view = this.getView(viewId);
         view.setText(text);
         return this;
     }
 
-    public ViewHolder setImageResource(int viewId, @DrawableRes int drawableId) {
+    public ViewHolder setImageResource(@IdRes int viewId, @DrawableRes int drawableId) {
         ImageView view = this.getView(viewId);
         view.setImageResource(drawableId);
         return this;
     }
 
-    public ViewHolder setImageBitmap(int viewId, Bitmap bm) {
+    public ViewHolder setImageBitmap(@IdRes int viewId, Bitmap bm) {
         ImageView view = this.getView(viewId);
         view.setImageBitmap(bm);
         return this;
     }
 
-    public ViewHolder setOnClickListener(int viewId, Object o, View.OnClickListener listener) {
+    public ViewHolder setVisibility(@IdRes int viewId, int visibility) {
+        if (visibility == View.VISIBLE || visibility == View.INVISIBLE || visibility == View.GONE)
+            this.getView(viewId).setVisibility(visibility);
+        return this;
+    }
+
+    public ViewHolder setOnClickListener(@IdRes int viewId, Object o, View.OnClickListener listener) {
         View view = this.getView(viewId);
         view.setTag(o);
         view.setOnClickListener(listener);

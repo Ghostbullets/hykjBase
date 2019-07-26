@@ -75,6 +75,41 @@ public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerV
         notifyDataSetChanged();
     }
 
+    //删除指定位置元素
+    public void remove(int position) {
+        if (position >= 0 && position <= mDatas.size() - 1) {
+            mDatas.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    //删除指定item
+    public void remove(T item) {
+        if (item != null) {
+            int index = mDatas.indexOf(item);
+            if (index != -1) {
+                mDatas.remove(index);
+                notifyItemRemoved(index);
+            }
+        }
+    }
+
+    //添加item
+    public void add(T item) {
+        if (item != null) {
+            mDatas.add(item);
+            notifyItemInserted(mDatas.size() - 1);
+        }
+    }
+
+    //在指定位置添加item，原来位于这里的item跟后面的item全部右移1个位置
+    public void add(int position, T item) {
+        if (item != null && position >= 0 && position <= mDatas.size() - 1) {
+            mDatas.add(position, item);
+            notifyItemInserted(position);
+        }
+    }
+
     public void setOnItemClickListener(OnItemClickListener itemClickListener) {
         mListener = itemClickListener;
     }

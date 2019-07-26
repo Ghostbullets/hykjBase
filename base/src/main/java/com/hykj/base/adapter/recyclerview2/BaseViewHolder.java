@@ -1,6 +1,8 @@
 package com.hykj.base.adapter.recyclerview2;
 
 import android.graphics.Bitmap;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
@@ -29,32 +31,38 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
 
 
-    public BaseViewHolder setText(int viewId, CharSequence text) {
+    public BaseViewHolder setText(@IdRes int viewId, CharSequence text) {
         TextView view = this.getView(viewId);
         view.setText(text);
         return this;
     }
 
-    public BaseViewHolder setImageResource(int viewId, int drawableId) {
+    public BaseViewHolder setImageResource(@IdRes int viewId, @DrawableRes int drawableId) {
         ImageView view = this.getView(viewId);
         view.setImageResource(drawableId);
         return this;
     }
 
-    public BaseViewHolder setImageBitmap(int viewId, Bitmap bm) {
+    public BaseViewHolder setImageBitmap(@IdRes int viewId, Bitmap bm) {
         ImageView view = this.getView(viewId);
         view.setImageBitmap(bm);
         return this;
     }
 
-    public BaseViewHolder setOnClickListener(int viewId, Object o, View.OnClickListener listener) {
+    public BaseViewHolder setVisibility(@IdRes int viewId, int visibility) {
+        if (visibility == View.VISIBLE || visibility == View.INVISIBLE || visibility == View.GONE)
+            this.getView(viewId).setVisibility(visibility);
+        return this;
+    }
+
+    public BaseViewHolder setOnClickListener(@IdRes int viewId, Object o, View.OnClickListener listener) {
         View view = this.getView(viewId);
         view.setTag(o);
         view.setOnClickListener(listener);
         return this;
     }
 
-    public <T extends View> T getView(int id) {
+    public <T extends View> T getView(@IdRes int id) {
         View view = mViews.get(id);
         if (view == null) {
             view = itemView.findViewById(id);
