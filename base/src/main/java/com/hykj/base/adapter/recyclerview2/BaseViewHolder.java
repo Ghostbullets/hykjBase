@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,6 +53,34 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     public BaseViewHolder setVisibility(@IdRes int viewId, int visibility) {
         if (visibility == View.VISIBLE || visibility == View.INVISIBLE || visibility == View.GONE)
             this.getView(viewId).setVisibility(visibility);
+        return this;
+    }
+
+    public BaseViewHolder setLayoutParams(@IdRes int viewId, int width, int height) {
+        if ((width == -1 || width == -2 || width > 0) && (height == -1 || height == -2 || height > 0)) {
+            View view = this.getView(viewId);
+            ViewGroup.LayoutParams params = view.getLayoutParams();
+            if (params == null) {
+                params = new ViewGroup.MarginLayoutParams(width, height);
+            } else {
+                params.width = width;
+                params.height = height;
+            }
+            view.setLayoutParams(params);
+        }
+        return this;
+    }
+
+    public BaseViewHolder setLayoutParams(@IdRes int viewId, ViewGroup.LayoutParams params) {
+        if (params != null) {
+            View view = this.getView(viewId);
+            if (view.getParent() instanceof ViewGroup) {
+                ViewGroup.LayoutParams layoutParams = ((ViewGroup) view.getParent()).getLayoutParams();
+                if (layoutParams != null && layoutParams.getClass().getName().equals(params.getClass().getName())) {
+                    view.setLayoutParams(params);
+                }
+            }
+        }
         return this;
     }
 

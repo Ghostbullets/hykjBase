@@ -68,6 +68,34 @@ public class ViewHolder {
         return this;
     }
 
+    public ViewHolder setLayoutParams(@IdRes int viewId, int width, int height) {
+        if ((width == -1 || width == -2 || width > 0) && (height == -1 || height == -2 || height > 0)) {
+            View view = this.getView(viewId);
+            ViewGroup.LayoutParams params = view.getLayoutParams();
+            if (params == null) {
+                params = new ViewGroup.MarginLayoutParams(width, height);
+            } else {
+                params.width = width;
+                params.height = height;
+            }
+            view.setLayoutParams(params);
+        }
+        return this;
+    }
+
+    public ViewHolder setLayoutParams(@IdRes int viewId, ViewGroup.LayoutParams params) {
+        if (params != null) {
+            View view = this.getView(viewId);
+            if (view.getParent() instanceof ViewGroup) {
+                ViewGroup.LayoutParams layoutParams = ((ViewGroup) view.getParent()).getLayoutParams();
+                if (layoutParams != null && layoutParams.getClass().getName().equals(params.getClass().getName())) {
+                    view.setLayoutParams(params);
+                }
+            }
+        }
+        return this;
+    }
+
     public ViewHolder setOnClickListener(@IdRes int viewId, Object o, View.OnClickListener listener) {
         View view = this.getView(viewId);
         view.setTag(o);
