@@ -1,6 +1,7 @@
 package com.hykj.base.base;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 public abstract class BaseFragment extends Fragment {
     // 宿主对象
@@ -134,6 +136,26 @@ public abstract class BaseFragment extends Fragment {
      */
     public void onSecondClick() {
 
+    }
+
+    /***
+     * 关软件盘  调用该方法传入一个view
+     *
+     * @param view
+     */
+    protected void HideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    /**
+     * 显示软件盘
+     */
+    protected void ShowKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
 }
