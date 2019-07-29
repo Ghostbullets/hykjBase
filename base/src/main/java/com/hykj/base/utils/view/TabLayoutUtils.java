@@ -20,7 +20,7 @@ public class TabLayoutUtils {
     /**
      * 重新设置TabLayout的margin
      *
-     * @param tabLayout 控件
+     * @param tabLayout     控件
      * @param bottomMargin  顶部文字跟底部下划线距离
      * @param isEqualLength 下划线是否跟文字等长
      */
@@ -40,15 +40,26 @@ public class TabLayoutUtils {
                         }
 
                         //拿到tabView的mTextView属性  tab的字数不固定一定用反射取mTextView
-                        Field mTextViewField = tabView.getClass().getDeclaredField("mTextView");
-                        mTextViewField.setAccessible(true);
-                        TextView mTextView = (TextView) mTextViewField.get(tabView);
+                        Field textViewField = null;
+                        try {
+                            textViewField = tabView.getClass().getDeclaredField("mTextView");//27.1.1及以下tabView里面的TextView参数名是mTextView
+                        } catch (NoSuchFieldException e) {
+                            try {
+                                textViewField = tabView.getClass().getDeclaredField("textView");//28.0.0及以上tabView里面的TextView参数名是textView
+                            } catch (NoSuchFieldException e1) {
+
+                            }
+                        }
+                        if (textViewField == null)
+                            return;
+                        textViewField.setAccessible(true);
+                        TextView textView = (TextView) textViewField.get(tabView);
 
                         //测量mTextView的宽度
-                        int width = mTextView.getWidth();
+                        int width = textView.getWidth();
                         if (width <= 0) {
-                            mTextView.measure(0, 0);
-                            width = mTextView.getMeasuredWidth();
+                            textView.measure(0, 0);
+                            width = textView.getMeasuredWidth();
                         }
                         int margin = isEqualLength ? (tabViewWidth - width) / 2 : (tabViewWidth - width) / 4;
 
