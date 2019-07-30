@@ -22,4 +22,25 @@
         <attr name="avatarBorderWidth" format="dimension" />
         <attr name="avatarBorderColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="TextSwitcherView">
+        <attr name="tsvGravity" format="enum">
+            <!--数值跟Gravity的一样-->
+            <enum name="center" value="17" />
+            <enum name="left" value="3" />
+            <enum name="right" value="5" />
+        </attr>
+        <attr name="tsvTextSize" format="dimension" />
+        <attr name="tsvTextColor" format="color" />
+        <attr name="tsvSingleLine" format="boolean" />
+        <attr name="tsvDuration" format="integer" />
+        <attr name="tsvDelayTime" format="integer" />
+        <attr name="tsvDirection" format="enum">
+            <enum name="bottom_to_top" value="0" />
+            <enum name="top_to_bottom" value="1" />
+            <enum name="right_to_left" value="2" />
+            <enum name="left_to_right" value="3" />
+        </attr>
+        <attr name="tsvIsMaximumTextWidth" format="boolean" />
+    </declare-styleable>
 </resources>
