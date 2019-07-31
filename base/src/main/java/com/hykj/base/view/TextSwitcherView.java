@@ -183,10 +183,15 @@ public class TextSwitcherView<T> extends TextSwitcher implements ViewSwitcher.Vi
     //设置数据
     public TextSwitcherView<T> reloadListView(List<T> list, boolean isClear) {
         stopFlipping();
-        if (isClear)
+        if (isClear) {
             this.dataList.clear();
+            index = 0;
+        }
         if (list != null)
             this.dataList.addAll(list);
+        if (this.dataList.size() > 0 && isClear) {
+            setText(this.dataList.get(0).toString());
+        }
         measureWidth();
         return this;
     }
