@@ -120,6 +120,30 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
+     * 打开页带返回
+     *
+     * @param cls
+     * @param requestCode
+     */
+    private void startActivityForResult(Class<?> cls, int requestCode) {
+        Intent intent = new Intent(getContext(), cls);
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * 打开页带返回、带参数
+     *
+     * @param cls
+     * @param requestCode
+     * @param bundle
+     */
+    private void startActivityForResult(Class<?> cls, int requestCode, Bundle bundle) {
+        Intent intent = new Intent(getContext(), cls);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
      * 获取布局
      *
      * @return

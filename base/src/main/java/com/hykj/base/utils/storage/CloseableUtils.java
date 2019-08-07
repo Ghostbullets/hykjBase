@@ -13,7 +13,8 @@ public class CloseableUtils {
         if (closeables != null) {
             try {
                 for (Closeable closeable : closeables) {
-                    closeable.close();
+                    if (closeable != null)
+                        closeable.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
