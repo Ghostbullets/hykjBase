@@ -104,6 +104,24 @@ public class StringUtils {
     }
 
     /**
+     * 判断 text字符串是否跟数组strs中的某一个元素相同
+     *
+     * @param text 字符串
+     * @param strs 字符串数组
+     * @return
+     */
+    public static boolean isEqual(String text, String... strs) {
+        if (text == null || strs == null || strs.length == 0)
+            return false;
+        for (String str : strs) {
+            if (str != null && str.equals(text)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 获取默认值
      *
      * @param strValue

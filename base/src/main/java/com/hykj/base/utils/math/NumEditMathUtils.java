@@ -27,6 +27,7 @@ public class NumEditMathUtils {
     private int MAX_NUM = 99;//默认数量最大99
     private int curNum = 1;//当前数量，默认1
     private OnNumberChangeListener mListener;
+    private boolean isCanDeleteNull;//是否可以删除为空
 
     public NumEditMathUtils(TextView tvSub, TextView tvAdd, EditText etNum) {
         init(tvSub, tvAdd, etNum, null);
@@ -42,6 +43,8 @@ public class NumEditMathUtils {
         this.tvAdd = tvAdd;
         this.tvAdd.setTag(NumChangeStatus.ADD);
         this.etNum = etNum;
+        this.etNum.setText("1");
+        this.etNum.setSelection(this.etNum.length());
         this.etNum.setKeyListener(keyListener);
         this.mListener = listener;
         this.tvSub.setOnClickListener(onClickListener);
@@ -80,8 +83,8 @@ public class NumEditMathUtils {
             String s1 = s.toString();
             int temp = curNum;
             boolean empty = TextUtils.isEmpty(s1);
-            curNum = empty ? 1 : Integer.valueOf(s1);
-            if (empty) {
+            curNum = empty ? isCanDeleteNull ? 0 : 1 : Integer.valueOf(s1);
+            if (empty && !isCanDeleteNull) {
                 updateNumSelection();
             }
             if (mListener != null && !(empty && temp == 1))//原来的值为1，并且删除导致数字还是1的情况下不通知
@@ -98,7 +101,7 @@ public class NumEditMathUtils {
         this.etNum.removeTextChangedListener(textWatcher);
         this.etNum.setText(String.valueOf(curNum));
         this.etNum.addTextChangedListener(textWatcher);
-        this.etNum.setSelection(etNum.getText().toString().length());
+        this.etNum.setSelection(etNum.length());
     }
 
     /**
@@ -150,6 +153,10 @@ public class NumEditMathUtils {
             updateNumSelection();
         }
         return this;
+    }
+
+    public void setCanDeleteNull(boolean canDeleteNull) {
+        isCanDeleteNull = canDeleteNull;
     }
 
     //改变数量监听
