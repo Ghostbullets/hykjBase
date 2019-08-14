@@ -166,7 +166,7 @@ public abstract class BaseActivity extends FragmentActivity {
      *
      * @param cls
      */
-    protected void startActivity(Class<?> cls) {
+    public void startActivity(Class<?> cls) {
         startActivity(cls, null);
     }
 
@@ -176,7 +176,7 @@ public abstract class BaseActivity extends FragmentActivity {
      * @param cls
      * @param bundle
      */
-    protected void startActivity(Class<?> cls, Bundle bundle) {
+    public void startActivity(Class<?> cls, Bundle bundle) {
         Intent intent = new Intent(mActivity, cls);
         if (bundle != null) {
             intent.putExtras(bundle);
@@ -190,7 +190,7 @@ public abstract class BaseActivity extends FragmentActivity {
      * @param cls
      * @param requestCode
      */
-    protected void startActivityForResult(Class<?> cls, int requestCode) {
+    public void startActivityForResult(Class<?> cls, int requestCode) {
         startActivityForResult(cls, requestCode, null);
     }
 
@@ -201,7 +201,7 @@ public abstract class BaseActivity extends FragmentActivity {
      * @param requestCode
      * @param bundle
      */
-    protected void startActivityForResult(Class<?> cls, int requestCode, Bundle bundle) {
+    public void startActivityForResult(Class<?> cls, int requestCode, Bundle bundle) {
         Intent intent = new Intent(mActivity, cls);
         if (bundle != null)
             intent.putExtras(bundle);
@@ -213,7 +213,7 @@ public abstract class BaseActivity extends FragmentActivity {
      *
      * @param view
      */
-    protected void HideKeyboard(View view) {
+    public void HideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -223,7 +223,7 @@ public abstract class BaseActivity extends FragmentActivity {
     /**
      * 显示软件盘
      */
-    protected void ShowKeyboard(View view) {
+    public void ShowKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }

@@ -155,8 +155,9 @@ public class NumEditMathUtils {
         return this;
     }
 
-    public void setCanDeleteNull(boolean canDeleteNull) {
+    public NumEditMathUtils setCanDeleteNull(boolean canDeleteNull) {
         isCanDeleteNull = canDeleteNull;
+        return this;
     }
 
     //改变数量监听

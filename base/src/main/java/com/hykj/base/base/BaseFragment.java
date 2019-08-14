@@ -103,8 +103,8 @@ public abstract class BaseFragment extends Fragment {
      *
      * @param cls
      */
-    protected void startActivity(Class<?> cls) {
-        startActivity(new Intent(mActivity, cls));
+    public void startActivity(Class<?> cls) {
+        startActivity(new Intent(getContext(), cls));
     }
 
     /**
@@ -113,8 +113,8 @@ public abstract class BaseFragment extends Fragment {
      * @param cls
      * @param bundle
      */
-    protected void startActivity(Class<?> cls, Bundle bundle) {
-        Intent intent = new Intent(mActivity, cls);
+    public void startActivity(Class<?> cls, Bundle bundle) {
+        Intent intent = new Intent(getContext(), cls);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -125,9 +125,8 @@ public abstract class BaseFragment extends Fragment {
      * @param cls
      * @param requestCode
      */
-    private void startActivityForResult(Class<?> cls, int requestCode) {
-        Intent intent = new Intent(getContext(), cls);
-        startActivityForResult(intent, requestCode);
+    public void startActivityForResult(Class<?> cls, int requestCode) {
+        startActivityForResult(cls,requestCode,null);
     }
 
     /**
@@ -137,9 +136,10 @@ public abstract class BaseFragment extends Fragment {
      * @param requestCode
      * @param bundle
      */
-    private void startActivityForResult(Class<?> cls, int requestCode, Bundle bundle) {
+    public void startActivityForResult(Class<?> cls, int requestCode, Bundle bundle) {
         Intent intent = new Intent(getContext(), cls);
-        intent.putExtras(bundle);
+        if (bundle!=null)
+            intent.putExtras(bundle);
         startActivityForResult(intent, requestCode);
     }
 
@@ -167,7 +167,7 @@ public abstract class BaseFragment extends Fragment {
      *
      * @param view
      */
-    protected void HideKeyboard(View view) {
+    public void HideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -177,7 +177,7 @@ public abstract class BaseFragment extends Fragment {
     /**
      * 显示软件盘
      */
-    protected void ShowKeyboard(View view) {
+    public void ShowKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
