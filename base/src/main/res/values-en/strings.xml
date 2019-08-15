@@ -10,4 +10,8 @@
     <string name="update_time">update_time</string>
     <string name="talk_to_you_later">talk to you later</string>
     <string name="Updated_instructions">Updated instructions:</string>
+    <string name="Start_the_download">Start the download</string>
+    <string name="Waiting_for_download">Waiting for download....</string>
+    <string name="has_downloading">downloading:%d/100</string>
+    <string name="When_the_download_is_complete_click_install">When the download is complete, click install</string>
 </resources>

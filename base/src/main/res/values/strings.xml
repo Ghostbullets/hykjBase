@@ -9,4 +9,8 @@
     <string name="update_time">更新时间</string>
     <string name="talk_to_you_later">下次再说</string>
     <string name="Updated_instructions">更新说明:</string>
+    <string name="Start_the_download">开始下载</string>
+    <string name="Waiting_for_download">等待下载....</string>
+    <string name="has_downloading">正在下载:%d/100</string>
+    <string name="When_the_download_is_complete_click_install">下载完成,点击安装</string>
 </resources>

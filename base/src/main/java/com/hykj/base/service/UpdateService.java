@@ -14,11 +14,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.hykj.base.R;
 import com.hykj.base.bean.UpdateTransInfo;
+import com.hykj.base.utils.ContextKeep;
 import com.hykj.base.utils.auth.FileProviderUtils;
 import com.hykj.base.utils.text.Tip;
-
-import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -34,7 +34,7 @@ import zlc.season.rxdownload3.core.Succeed;
  */
 public class UpdateService extends Service {
     public static final String UPDATE_TRANS_INFO = "updateTransInfo";
-    private static final int notificationId = 124;
+    private static final int notificationId = 0x1357;
     private static final String id = "static";
     private static final String name = "Primary Channel";
 
@@ -66,9 +66,9 @@ public class UpdateService extends Service {
             //.setDefaults(Notification.DEFAULT_ALL);//设置默认的提示音，振动方式，灯光
         }
         builder.setSmallIcon(info.getIcon())//设置图标
-                .setTicker(String.format("%s开始下载", info.appName))
+                .setTicker(String.format("%s%s", info.appName, ContextKeep.getContext().getResources().getString(R.string.Start_the_download)))
                 .setContentTitle(info.appName)//设置标题
-                .setContentText("等待下载...")//消息内容
+                .setContentText(ContextKeep.getContext().getResources().getString(R.string.Waiting_for_download))//消息内容
                 .setWhen(System.currentTimeMillis())//发送时间
                 .setAutoCancel(false)//打开程序后图标不消失
                 .setProgress(100, 0, false);
@@ -106,7 +106,7 @@ public class UpdateService extends Service {
                         } else if (status instanceof Downloading) {
                             int progress = (int) (100 * status.getDownloadSize() / status.getTotalSize());
                             builder.setProgress(100, progress, false)
-                                    .setContentText(String.format(Locale.getDefault(), "正在下载:%d/100", progress));
+                                    .setContentText(ContextKeep.getContext().getResources().getString(R.string.has_downloading, progress));
                             notificationManager.notify(notificationId, builder.build());
                         }
                     }
@@ -124,10 +124,10 @@ public class UpdateService extends Service {
         }
         if (info.isAutoInstall) {
             startActivity(installIntent);
-            notificationManager.cancelAll();
+            notificationManager.cancel(notificationId);
         } else {
             PendingIntent pendingIntent = PendingIntent.getActivity(UpdateService.this, 0, installIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentText("下载完成,点击安装")
+            builder.setContentText(ContextKeep.getContext().getResources().getString(R.string.When_the_download_is_complete_click_install))
                     .setContentIntent(pendingIntent);
             notificationManager.notify(notificationId, builder.build());
         }
