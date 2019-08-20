@@ -13,6 +13,8 @@ import com.hykj.base.R;
 import com.hykj.base.adapter.recyclerview2.BaseAdapter;
 import com.hykj.base.adapter.recyclerview2.SimpleRecycleViewAdapter;
 
+import java.util.List;
+
 /**
  * 列表PopupWindow
  *
@@ -90,5 +92,15 @@ public class ListPopupWindow<T> extends BasePopupWindow {
 
     public interface OnMenuItemClickListener<T> {
         void onMenuItemClick(ListPopupWindow popupWindow, View view, SimpleRecycleViewAdapter<T> popupAdapter, int position);
+    }
+
+    /**
+     * 导入数据
+     *
+     * @param list    新数据
+     * @param isClear 是否清空原有数据
+     */
+    public void reloadListView(List<T> list, boolean isClear) {
+        popupAdapter.reloadListView(list,isClear);
     }
 }

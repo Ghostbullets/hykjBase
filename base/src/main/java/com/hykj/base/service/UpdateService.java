@@ -36,7 +36,7 @@ public class UpdateService extends Service {
     public static final String UPDATE_TRANS_INFO = "updateTransInfo";
     private static final int notificationId = 0x1357;
     private static final String id = "static";
-    private static final String name = "Primary Channel";
+    private static final String name = "下载消息";
 
     private UpdateTransInfo info;//携带数据
     //通知栏
