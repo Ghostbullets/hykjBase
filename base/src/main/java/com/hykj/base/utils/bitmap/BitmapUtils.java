@@ -19,13 +19,18 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
 import com.hykj.base.utils.ContextKeep;
+import com.hykj.base.utils.DisplayUtils;
 import com.hykj.base.utils.storage.FileUtil;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /**
  * 存取头像工具类---以文件形式存放
@@ -381,5 +386,67 @@ public class BitmapUtils {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * Base64字符串转bitmap
+     *
+     * @param base64Str base64字符串
+     * @param isDecode  是否解码
+     * @return
+     */
+    public static Bitmap base64ToBitmap(String base64Str, boolean isDecode) {
+        if (TextUtils.isEmpty(base64Str))
+            return null;
+        try {
+            if (isDecode) {
+                base64Str = URLDecoder.decode(base64Str, "UTF-8");
+            }
+            byte[] bytes = Base64.decode(base64Str, Base64.NO_WRAP);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Bitmap base64ToBitmap(String base64Str) {
+        return base64ToBitmap(base64Str, true);
+    }
+
+    /**
+     * bitmap转base64字符串
+     *
+     * @param path     本地图片地址
+     * @param isEncode 是否编码
+     * @param width    想要的bitmap宽
+     * @param height   想要的bitmap高
+     * @return
+     */
+    public static String bitmapToBase64(String path, boolean isEncode, int width, int height) {
+        String encodeToString = "";
+        if (width == 0 || height == 0) {
+            DisplayUtils displayUtils = new DisplayUtils();
+            width = displayUtils.screenWidth();
+            height = displayUtils.screenHeight();
+        }
+        Bitmap bitmap = decodeSampledBitmapFromPath(path, width, height);
+        if (bitmap != null) {
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bao);
+            bitmap.recycle();
+            encodeToString = Base64.encodeToString(bao.toByteArray(), Base64.NO_WRAP);
+            try {
+                if (isEncode)
+                    return URLEncoder.encode(encodeToString, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return encodeToString;
+    }
+
+    public static String bitmapToBase64(String path, int width, int height) {
+        return bitmapToBase64(path, true, width, height);
     }
 }

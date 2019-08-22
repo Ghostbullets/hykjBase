@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.hykj.base.R;
+import com.hykj.base.listener.SingleOnClickListener;
 import com.hykj.base.utils.DisplayUtils;
 
 import java.lang.annotation.Retention;
@@ -66,6 +67,7 @@ public class TextSwitcherView<T> extends TextSwitcher implements ViewSwitcher.Vi
     private @Direction
     int direction = Direction.bottom_to_top;//动画方向
     private TextView textView;//默认填充的TextView
+    private OnTextSwitcherListener<T> onTextSwitcherListener;
 
     public TextSwitcherView(Context context) {
         this(context, null);
@@ -118,7 +120,16 @@ public class TextSwitcherView<T> extends TextSwitcher implements ViewSwitcher.Vi
         setInAnimation(inAnimation);
         setOutAnimation(outAnimation);
         setFactory(this);
+        setOnClickListener(onClickListener);
     }
+
+    private SingleOnClickListener onClickListener = new SingleOnClickListener() {
+        @Override
+        public void onClickSub(View v) {
+            if (onTextSwitcherListener != null)
+                onTextSwitcherListener.onTextSwitcherClick(TextSwitcherView.this, index, getCurrentItem());
+        }
+    };
 
     @Override
     public void setFactory(ViewFactory factory) {
@@ -223,6 +234,23 @@ public class TextSwitcherView<T> extends TextSwitcher implements ViewSwitcher.Vi
 
     public TextView getTextView() {
         return textView;
+    }
+
+    public T getCurrentItem() {
+        return dataList.get(index);
+    }
+
+    public int getCurrentPosition() {
+        return index;
+    }
+
+    public TextSwitcherView<T> setOnTextSwitcherListener(OnTextSwitcherListener<T> onTextSwitcherListener) {
+        this.onTextSwitcherListener = onTextSwitcherListener;
+        return this;
+    }
+
+    public interface OnTextSwitcherListener<T> {
+        void onTextSwitcherClick(TextSwitcherView<T> textSwitcherView, int position, T t);
     }
 
     @Retention(RetentionPolicy.SOURCE)
