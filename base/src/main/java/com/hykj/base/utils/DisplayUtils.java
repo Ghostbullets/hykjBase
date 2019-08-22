@@ -1,10 +1,12 @@
 package com.hykj.base.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 
 /**
@@ -124,6 +126,24 @@ public class DisplayUtils {
         params.height = getStatusBarHeight(context);
         view.setLayoutParams(params);
         return params.height;
+    }
+
+    /**
+     * 设置标题栏图标颜色,android6.0以上才有用
+     *
+     * @param setDark 是否设置为黑色
+     */
+    public static void setStatusIconColor(boolean setDark, Window window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = window.getDecorView();
+            int vis = decorView.getSystemUiVisibility();
+            if (setDark) {
+                vis |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            } else {
+                vis &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            decorView.setSystemUiVisibility(vis);
+        }
     }
 
 }
