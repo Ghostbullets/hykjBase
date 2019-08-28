@@ -363,15 +363,20 @@ public class BitmapUtils {
         return scaleBitmap;
     }
 
+    public static boolean saveBitmapToSDCard(Bitmap bitmap, String fileName, boolean isRecycled) {
+        return saveBitmapToSDCard(bitmap, Bitmap.CompressFormat.PNG, fileName, isRecycled);
+    }
+
     /**
      * 保存图片到本地，并且插入到相册中,需要读写存储权限
      *
      * @param bitmap     图像资源
+     * @param format     压缩图像的格式
      * @param fileName   要保存的文件名
      * @param isRecycled 是否在保存成功后释放资源
      */
-    public static boolean saveBitmapToSDCard(Bitmap bitmap, String fileName, boolean isRecycled) {
-        String filePath = FileUtil.saveBitmapToFile(bitmap, fileName);
+    public static boolean saveBitmapToSDCard(Bitmap bitmap, Bitmap.CompressFormat format, String fileName, boolean isRecycled) {
+        String filePath = FileUtil.saveBitmapToFile(bitmap, format, fileName);
         try {
             if (!TextUtils.isEmpty(filePath)) {
                 String result = MediaStore.Images.Media.insertImage(ContextKeep.getContext().getContentResolver(), filePath, fileName, null);
@@ -417,23 +422,24 @@ public class BitmapUtils {
     /**
      * bitmap转base64字符串
      *
-     * @param path     本地图片地址
-     * @param isEncode 是否编码
-     * @param width    想要的bitmap宽
-     * @param height   想要的bitmap高
+     * @param path       本地图片地址
+     * @param isEncode   是否编码
+     * @param diskSizeKb 需要压缩到多少kb大小，传0不压缩，不保证压缩到1kb这种
      * @return
      */
-    public static String bitmapToBase64(String path, boolean isEncode, int width, int height) {
+    public static String bitmapToBase64(String path, boolean isEncode, int diskSizeKb) {
         String encodeToString = "";
-        if (width == 0 || height == 0) {
-            DisplayUtils displayUtils = new DisplayUtils();
-            width = displayUtils.screenWidth();
-            height = displayUtils.screenHeight();
-        }
-        Bitmap bitmap = decodeSampledBitmapFromPath(path, width, height);
+        DisplayUtils displayUtils = new DisplayUtils();
+        Bitmap bitmap = decodeSampledBitmapFromPath(path, displayUtils.screenWidth(), displayUtils.screenHeight());
         if (bitmap != null) {
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bao);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.PNG, quality, bao);
+            while (diskSizeKb > 0 && bao.toByteArray().length / 1000 > diskSizeKb) {
+                bao.reset();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bao);
+                quality -= 10;
+            }
             bitmap.recycle();
             encodeToString = Base64.encodeToString(bao.toByteArray(), Base64.NO_WRAP);
             try {
@@ -446,7 +452,7 @@ public class BitmapUtils {
         return encodeToString;
     }
 
-    public static String bitmapToBase64(String path, int width, int height) {
-        return bitmapToBase64(path, true, width, height);
+    public static String bitmapToBase64(String path, int diskSizeKb) {
+        return bitmapToBase64(path, true, diskSizeKb);
     }
 }

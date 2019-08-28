@@ -148,18 +148,23 @@ public class FileUtil {
         return file.exists();
     }
 
+    public static String saveBitmapToFile(Bitmap bitmap, String filename) {
+        return saveBitmapToFile(bitmap, Bitmap.CompressFormat.PNG, filename);
+    }
+
     /**
      * 将图片存储为文件,有损压缩
      *
      * @param bitmap   图片
      * @param filename 文件名
+     * @param format   压缩图像的格式
      * @return 保存成功返回保存路径，否则返回null
      */
-    public static String saveBitmapToFile(Bitmap bitmap, String filename) {
+    public static String saveBitmapToFile(Bitmap bitmap, Bitmap.CompressFormat format, String filename) {
         if (bitmap == null || TextUtils.isEmpty(filename))
             return null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        bitmap.compress(format, 100, bos);
         byte[] bytes = bos.toByteArray();
         CloseableUtils.close(bos);
         return saveBytesToFile(bytes, filename, FileType.IMG);
