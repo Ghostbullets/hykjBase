@@ -64,7 +64,11 @@ public class AvatarView extends AppCompatImageView {
     }
 
     public AvatarView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
+    }
+
+    public AvatarView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         setScaleType(SCALE_TYPE);
         mReady = true;
         init(context, attrs);

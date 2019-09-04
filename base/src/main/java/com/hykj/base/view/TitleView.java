@@ -37,15 +37,19 @@ public class TitleView extends LinearLayout {
     }
 
     public TitleView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
+    }
+
+    public TitleView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         content = LayoutInflater.from(context).inflate(R.layout.layout_title_view, this, true);
-        layoutLeft = (LinearLayout) findViewById(R.id.layout_title_left);
-        layoutMiddle = (LinearLayout) findViewById(R.id.layout_title_middle);
-        layoutRight = (LinearLayout) findViewById(R.id.layout_title_right);
+        layoutLeft = findViewById(R.id.layout_title_left);
+        layoutMiddle = findViewById(R.id.layout_title_middle);
+        layoutRight = findViewById(R.id.layout_title_right);
         vTransStatusBar = findViewById(R.id.v_status_bar);
 
-        ivBack = (ImageView) findViewById(R.id.iv_title_back);
-        tvTitle = (TextView) findViewById(R.id.tv_title_middle);
+        ivBack = findViewById(R.id.iv_title_back);
+        tvTitle = findViewById(R.id.tv_title_middle);
         tvTitle.setSelected(true);
 
         ivBack.setImageResource(R.drawable.ic_black_back);

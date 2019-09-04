@@ -55,7 +55,11 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
     }
 
     public ZoomImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
+    }
+
+    public ZoomImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         super.setScaleType(ScaleType.MATRIX);//允许矩阵
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         setOnTouchListener(this);

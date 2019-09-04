@@ -35,7 +35,6 @@ public class CustomEmptyView extends LinearLayout {
 
     public CustomEmptyView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
-
     }
 
     @SuppressLint("RestrictedApi")
