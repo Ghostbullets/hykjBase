@@ -43,4 +43,17 @@
         </attr>
         <attr name="tsvIsMaximumTextWidth" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="GestureDrawView">
+        <attr name="gdvStrokeWidth" format="integer" />
+        <attr name="gdvColor" format="color" />
+    </declare-styleable>
+    <declare-styleable name="ChoosePhotosView">
+        <attr name="cpv_default_add_icon" format="reference" />
+        <attr name="cpv_default_del_icon" format="reference" />
+        <attr name="cpv_default_placeholder" format="reference" />
+        <attr name="cpv_can_show_big_photo" format="boolean" />
+        <attr name="android:layout_width"/>
+        <attr name="android:layout_height"/>
+    </declare-styleable>
 </resources>

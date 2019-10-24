@@ -428,9 +428,26 @@ public class BitmapUtils {
      * @return
      */
     public static String bitmapToBase64(String path, boolean isEncode, int diskSizeKb) {
-        String encodeToString = "";
         DisplayUtils displayUtils = new DisplayUtils();
         Bitmap bitmap = decodeSampledBitmapFromPath(path, displayUtils.screenWidth(), displayUtils.screenHeight());
+        return bitmapToBase64(bitmap, true, isEncode, diskSizeKb);
+    }
+
+    public static String bitmapToBase64(String path, int diskSizeKb) {
+        return bitmapToBase64(path, true, diskSizeKb);
+    }
+
+    /**
+     * bitmap转base64字符串
+     *
+     * @param bitmap     位图对象
+     * @param isRecycle  是否释放位图资源
+     * @param isEncode   是否编码
+     * @param diskSizeKb 需要压缩到多少kb大小，传0不压缩，不保证压缩到1kb这种
+     * @return
+     */
+    public static String bitmapToBase64(Bitmap bitmap, boolean isRecycle, boolean isEncode, int diskSizeKb) {
+        String encodeToString = "";
         if (bitmap != null) {
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
             int quality = 100;
@@ -440,7 +457,8 @@ public class BitmapUtils {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bao);
                 quality -= 10;
             }
-            bitmap.recycle();
+            if (isRecycle)
+                bitmap.recycle();
             encodeToString = Base64.encodeToString(bao.toByteArray(), Base64.NO_WRAP);
             try {
                 if (isEncode)
@@ -450,9 +468,5 @@ public class BitmapUtils {
             }
         }
         return encodeToString;
-    }
-
-    public static String bitmapToBase64(String path, int diskSizeKb) {
-        return bitmapToBase64(path, true, diskSizeKb);
     }
 }
