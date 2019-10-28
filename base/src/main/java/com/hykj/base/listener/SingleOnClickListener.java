@@ -15,7 +15,7 @@ public abstract class SingleOnClickListener extends SingleClick implements View.
 
     @Override
     public void onClick(View v) {
-        if (canClick()) {
+        if (canClick(v)) {
             onClickSub(v);
         }
     }
