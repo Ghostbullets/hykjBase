@@ -80,7 +80,7 @@ public class FileUtil {
      * @return
      */
     public static File createNewFile(String fileName, @FileType String fileType) {
-        return createNewFile(getCacheFilePath(fileType, fileName));
+        return createNewFile(getCacheFilePath(fileName, fileType));
     }
 
     public static File createNewFile(String filePath) {

@@ -18,6 +18,7 @@ import com.hykj.base.adapter.pager.ViewHolder;
 import com.hykj.base.base.TitleActivity;
 import com.hykj.base.listener.SingleOnClickListener;
 import com.hykj.base.utils.DateUtils;
+import com.hykj.base.utils.bitmap.BitmapUtils;
 import com.hykj.base.utils.storage.FileUtil;
 import com.hykj.base.utils.text.Tip;
 import com.hykj.base.view.TitleView;
@@ -33,11 +34,14 @@ public class PreviewImgActivity extends TitleActivity {
     private static final String IMG_LIST = "img_list";//图片集合
     private static final String SAVE = "isSave";//是否显示保存按钮
     private static final String INDEX = "index";//当前图片位置
+    private static final String IS_BASE64 = "isBase64";//是否是base64字符串
 
     private BasePagerAdapter<String> pagerAdapter;
     private ArrayList<String> imgList = new ArrayList<>();
     private ViewPager viewPager;
     private int currentPosition;
+    private boolean isSave;
+    private boolean isBase64;
 
     private TextView tvPage;
     private RequestManager manager;
@@ -50,19 +54,27 @@ public class PreviewImgActivity extends TitleActivity {
     @Override
     protected void init(TitleView title) {
         title.setTitle("预览");
+        initData();
+        initView();
+    }
+
+    private void initData() {
         imgList = getIntent().getStringArrayListExtra(IMG_LIST);
-        boolean isSave = getIntent().getBooleanExtra(SAVE, false);
-        int index = getIntent().getIntExtra(INDEX, 0);
+        isSave = getIntent().getBooleanExtra(SAVE, false);
+        isBase64 = getIntent().getBooleanExtra(IS_BASE64, false);
+        currentPosition = getIntent().getIntExtra(INDEX, 0);
         if (imgList.size() == 0) {
             finish();
             return;
         }
         manager = Glide.with(mActivity);
+    }
 
+    private void initView() {
         findViewById(R.id.tv_save).setVisibility(isSave ? View.VISIBLE : View.GONE);
         findViewById(R.id.tv_save).setOnClickListener(onClickListener);
         tvPage = findViewById(R.id.tv_page);
-        setPageNumber(index);
+        setPageNumber(currentPosition);
 
         pagerAdapter = createPagerAdapter(imgList);
         viewPager = findViewById(R.id.vp_view);
@@ -83,7 +95,11 @@ public class PreviewImgActivity extends TitleActivity {
             protected void convert(ViewHolder holder, String url, int position) {
                 ZoomImageView itemView = holder.getView(R.id.zoom_view);
                 itemView.initScale();
-                manager.load(url).into(itemView);
+                if (isBase64) {
+                    manager.load(BitmapUtils.base64ToBitmap(url, url.contains("%"))).into(itemView);
+                } else {
+                    manager.load(url).into(itemView);
+                }
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -128,13 +144,6 @@ public class PreviewImgActivity extends TitleActivity {
         }
     };
 
-    private View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            return true;
-        }
-    };
-
     /**
      * 设置页码
      *
@@ -164,21 +173,24 @@ public class PreviewImgActivity extends TitleActivity {
      * 保存图片
      */
     private void saveImage() {
-        ZoomImageView zoomImageView = (ZoomImageView) pagerAdapter.getPrimaryItem();
-        Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
-        try {
-            String strFileName = imgList.get(currentPosition);
-            if (strFileName.contains(".png")) {
-                compressFormat = Bitmap.CompressFormat.PNG;
+        View convertView = pagerAdapter.getPrimaryItem();
+        if (convertView != null) {
+            ZoomImageView zoomImageView = convertView.findViewById(R.id.zoom_view);
+            Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
+            try {
+                String strFileName = imgList.get(currentPosition);
+                if (!isBase64 && strFileName.contains(".png")) {
+                    compressFormat = Bitmap.CompressFormat.PNG;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            zoomImageView.buildDrawingCache(true);
+            zoomImageView.buildDrawingCache();//启用DrawingCache并创建位图
+            Bitmap bitmap = zoomImageView.getDrawingCache();//拷贝，因为DrawingCache得到的位图在禁用后会被回收
+            saveBitmapFile(bitmap, compressFormat);
+            zoomImageView.setDrawingCacheEnabled(false);//创建一个DrawingCache的拷贝，因为DrawingCache得到的位图在禁用后会被回收
         }
-        zoomImageView.buildDrawingCache(true);
-        zoomImageView.buildDrawingCache();//启用DrawingCache并创建位图
-        Bitmap bitmap = zoomImageView.getDrawingCache();//拷贝，因为DrawingCache得到的位图在禁用后会被回收
-        saveBitmapFile(bitmap, compressFormat);
-        zoomImageView.setDrawingCacheEnabled(false);//创建一个DrawingCache的拷贝，因为DrawingCache得到的位图在禁用后会被回收
     }
 
     /**
@@ -188,22 +200,14 @@ public class PreviewImgActivity extends TitleActivity {
      * @param compressFormat
      */
     private void saveBitmapFile(Bitmap bitmap, Bitmap.CompressFormat compressFormat) {
-        String suffix = compressFormat == Bitmap.CompressFormat.PNG ? "png" : "jpg";
-        File file = FileUtil.createNewFile(DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + suffix, FileUtil.FileType.IMG);
-
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(compressFormat, 100, bos);
-            bos.flush();
-            bos.close();
-
-            //刷新图库
-            scanAsync(file, Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            scanAsync(new File(FileUtil.getFileTypePath(FileUtil.FileType.IMG)), "android.intent.action.MEDIA_SCANNER_SCAN_DIR");
-            Tip.showShort(String.format("图片已经保存至:%s", file.getAbsolutePath()));
-        } catch (Exception e) {
-            e.printStackTrace();
+        String suffix = compressFormat == Bitmap.CompressFormat.PNG ? ".png" : ".jpg";
+        String fileName = DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + suffix;
+        if (BitmapUtils.saveBitmapToSDCard(bitmap, compressFormat, fileName, false)) {
+            Tip.showShort(String.format("图片已经保存至:%s", FileUtil.getCacheFilePath(fileName, FileUtil.FileType.IMG)));
         }
+        //刷新图库
+        //scanAsync(file, Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        //scanAsync(new File(FileUtil.getFileTypePath(FileUtil.FileType.IMG)), "android.intent.action.MEDIA_SCANNER_SCAN_DIR");
     }
 
     /**
@@ -216,7 +220,7 @@ public class PreviewImgActivity extends TitleActivity {
         Intent intent = new Intent(action);
         Uri data;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            data = FileProvider.getUriForFile(mActivity, "com.example.dexlibs.base.fileprovider", file);
+            data = FileProvider.getUriForFile(mActivity, getPackageName() + ".FileProvider", file);
         } else {
             data = Uri.fromFile(file);
         }
@@ -225,18 +229,28 @@ public class PreviewImgActivity extends TitleActivity {
         sendBroadcast(intent);
     }
 
-    /**
-     * 开启画面
-     *
-     * @param context
-     * @param list    图片列表
-     * @param isSave  是否显示保存按钮
-     */
     public static void start(Context context, ArrayList<String> list, int index, boolean isSave) {
-        Intent intent = new Intent(context, PreviewImgActivity.class);
+        start(context, list, index, isSave, false, PreviewImgActivity.class);
+    }
+
+    public static void start(Context context, ArrayList<String> list, int index, boolean isSave, boolean isBase64) {
+        start(context, list, index, isSave, isBase64, PreviewImgActivity.class);
+    }
+
+    /**
+     * @param context  上下文
+     * @param list     图片列表
+     * @param index    起始显示位置
+     * @param isSave   是否显示保存按钮
+     * @param isBase64 是否是base64字符串
+     * @param cls      可继承该类并传入，用于修改标题颜色等
+     */
+    public static void start(Context context, ArrayList<String> list, int index, boolean isSave, boolean isBase64, Class<? extends PreviewImgActivity> cls) {
+        Intent intent = new Intent(context, cls);
         intent.putStringArrayListExtra(IMG_LIST, list);
         intent.putExtra(INDEX, index);
         intent.putExtra(SAVE, isSave);
+        intent.putExtra(IS_BASE64, isBase64);
         context.startActivity(intent);
     }
 }

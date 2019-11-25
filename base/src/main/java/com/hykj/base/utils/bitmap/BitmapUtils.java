@@ -45,7 +45,7 @@ public class BitmapUtils {
         int outWidth = options.outWidth;
         int outHeight = options.outHeight;
         int SampleSize = 1;
-        if (outWidth > refWidth || outHeight > refHeight) {//获取的图片高度或者宽度大于你想要的高宽2倍以上才需要缩放
+        if ((refWidth > 0 && refHeight > 0) && (outWidth > refWidth || outHeight > refHeight)) {//获取的图片高度或者宽度大于你想要的高宽2倍以上才需要缩放
             final int width = outWidth / 2;
             final int height = outHeight / 2;
             while ((width / SampleSize) > refWidth && (height / SampleSize) > height) {
@@ -377,8 +377,8 @@ public class BitmapUtils {
      */
     public static boolean saveBitmapToSDCard(Bitmap bitmap, Bitmap.CompressFormat format, String fileName, boolean isRecycled) {
         String filePath = FileUtil.saveBitmapToFile(bitmap, format, fileName);
-        try {
-            if (!TextUtils.isEmpty(filePath)) {
+        if (!TextUtils.isEmpty(filePath)) {
+            try {
                 String result = MediaStore.Images.Media.insertImage(ContextKeep.getContext().getContentResolver(), filePath, fileName, null);
                 if (!TextUtils.isEmpty(result)) {
                     ContextKeep.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse(result)));
@@ -386,9 +386,11 @@ public class BitmapUtils {
                         bitmap.recycle();
                     return true;
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                //如果没给存储权限则无法插入到相册
+                return true;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -397,13 +399,16 @@ public class BitmapUtils {
      * Base64字符串转bitmap
      *
      * @param base64Str base64字符串
-     * @param isDecode  是否解码
+     * @param isDecode  是否解码(base64字符串由a-z、A-Z、0-9、"+"、"/"、"="组成，即如果存在%，则需要解码)
      * @return
      */
     public static Bitmap base64ToBitmap(String base64Str, boolean isDecode) {
         if (TextUtils.isEmpty(base64Str))
             return null;
         try {
+            if (base64Str.startsWith("data:image/png;base64,") || base64Str.startsWith("data:image/*;base64,") || base64Str.startsWith("data:image/jpg;base64,")) {
+                base64Str = base64Str.split(",")[1];
+            }
             if (isDecode) {
                 base64Str = URLDecoder.decode(base64Str, "UTF-8");
             }
@@ -428,8 +433,7 @@ public class BitmapUtils {
      * @return
      */
     public static String bitmapToBase64(String path, boolean isEncode, int diskSizeKb) {
-        DisplayUtils displayUtils = new DisplayUtils();
-        Bitmap bitmap = decodeSampledBitmapFromPath(path, displayUtils.screenWidth(), displayUtils.screenHeight());
+        Bitmap bitmap = decodeSampledBitmapFromPath(path, -1, -1);
         return bitmapToBase64(bitmap, true, isEncode, diskSizeKb);
     }
 
