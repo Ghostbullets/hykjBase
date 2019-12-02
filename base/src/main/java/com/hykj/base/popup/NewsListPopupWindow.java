@@ -114,5 +114,5 @@ public abstract class NewsListPopupWindow<T> extends BasePopupWindow {
         popupAdapter.reloadListView(list, isClear);
     }
 
-    abstract void onBindData(BaseViewHolder holder, T t, int position, @NonNull List<Object> payloads);
+    protected abstract void onBindData(BaseViewHolder holder, T t, int position, @NonNull List<Object> payloads);
 }
