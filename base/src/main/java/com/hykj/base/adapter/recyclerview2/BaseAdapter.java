@@ -1,6 +1,7 @@
 package com.hykj.base.adapter.recyclerview2;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,11 +20,12 @@ public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerV
     protected List<T> mDatas;
     protected Context mContext;
     protected View mView;
-    protected int mItemLayoutId;
+    protected @LayoutRes
+    int mItemLayoutId;
     protected OnItemClickListener mListener;
     protected OnItemLongClickListener mLongClickListener;
 
-    public BaseAdapter(Context context, List<T> datas, int layoutResId) {
+    public BaseAdapter(Context context, List<T> datas, @LayoutRes int layoutResId) {
         this.mContext = context;
         this.mDatas = datas == null ? new ArrayList<T>() : datas;
         this.mItemLayoutId = layoutResId;

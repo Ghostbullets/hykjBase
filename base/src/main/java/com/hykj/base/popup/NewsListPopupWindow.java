@@ -1,6 +1,8 @@
 package com.hykj.base.popup;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.hykj.base.R;
 import com.hykj.base.adapter.recyclerview2.BaseAdapter;
+import com.hykj.base.adapter.recyclerview2.BaseViewHolder;
 import com.hykj.base.adapter.recyclerview2.SimpleRecycleViewAdapter;
 
 import java.util.List;
@@ -20,22 +23,29 @@ import java.util.List;
  *
  * @param <T>
  */
-public class ListPopupWindow<T> extends BasePopupWindow {
+public abstract class NewsListPopupWindow<T> extends BasePopupWindow {
     protected SimpleRecycleViewAdapter<T> popupAdapter;
     protected OnMenuItemClickListener<T> mListener;
     protected RecyclerView rvPopup;
     protected DividerItemDecoration decoration;
 
-    public ListPopupWindow(Context context, SimpleRecycleViewAdapter<T> popupAdapter) {
-        this(context, null, popupAdapter);
+    public NewsListPopupWindow(Context context, List<T> list, int layoutResId) {
+        this(context, null, list, layoutResId);
     }
 
-    public ListPopupWindow(Context context, AttributeSet attrs, SimpleRecycleViewAdapter<T> popupAdapter) {
+    public NewsListPopupWindow(Context context, AttributeSet attrs, List<T> list, @LayoutRes int layoutResId) {
         super(context, attrs);
-        if (popupAdapter == null)
-            throw new RuntimeException("请不要传入空的适配器");
-        this.popupAdapter = popupAdapter;
+        popupAdapter = createPopupAdapter(context, list, layoutResId);
         initView(context);
+    }
+
+    private SimpleRecycleViewAdapter<T> createPopupAdapter(Context context, List<T> list, int layoutResId) {
+        return new SimpleRecycleViewAdapter<T>(context, list, layoutResId) {
+            @Override
+            public void BindData(BaseViewHolder holder, T t, int position, @NonNull List<Object> payloads) {
+                onBindData(holder, t, position, payloads);
+            }
+        };
     }
 
     protected void initView(Context context) {
@@ -49,7 +59,7 @@ public class ListPopupWindow<T> extends BasePopupWindow {
             @Override
             public void OnItemClick(BaseAdapter adapter, View view, int position) {
                 if (mListener != null) {
-                    mListener.onMenuItemClick(ListPopupWindow.this, view, popupAdapter, position);
+                    mListener.onMenuItemClick(NewsListPopupWindow.this, view, popupAdapter, position);
                 }
             }
         });
@@ -85,13 +95,13 @@ public class ListPopupWindow<T> extends BasePopupWindow {
         }
     }
 
-    public ListPopupWindow setOnMenuItemClickListener(OnMenuItemClickListener<T> onMenuItemClickListener) {
+    public NewsListPopupWindow setOnMenuItemClickListener(OnMenuItemClickListener<T> onMenuItemClickListener) {
         this.mListener = onMenuItemClickListener;
         return this;
     }
 
     public interface OnMenuItemClickListener<T> {
-        void onMenuItemClick(ListPopupWindow popupWindow, View view, SimpleRecycleViewAdapter<T> popupAdapter, int position);
+        void onMenuItemClick(NewsListPopupWindow popupWindow, View view, SimpleRecycleViewAdapter<T> popupAdapter, int position);
     }
 
     /**
@@ -101,6 +111,8 @@ public class ListPopupWindow<T> extends BasePopupWindow {
      * @param isClear 是否清空原有数据
      */
     public void reloadListView(List<T> list, boolean isClear) {
-        popupAdapter.reloadListView(list,isClear);
+        popupAdapter.reloadListView(list, isClear);
     }
+
+    abstract void onBindData(BaseViewHolder holder, T t, int position, @NonNull List<Object> payloads);
 }

@@ -1,8 +1,11 @@
 package com.hykj.base.adapter;
 
+import android.support.annotation.LayoutRes;
+
 public class LayoutItem {
     private int type;
-    private int layoutId;
+    private @LayoutRes
+    int layoutId;
 
     public int getType() {
         return this.type;
@@ -16,11 +19,11 @@ public class LayoutItem {
         return this.layoutId;
     }
 
-    public void setLayoutId(int layoutId) {
+    public void setLayoutId(@LayoutRes int layoutId) {
         this.layoutId = layoutId;
     }
 
-    public LayoutItem(int type, int layoutId) {
+    public LayoutItem(int type, @LayoutRes int layoutId) {
         this.type = type;
         this.layoutId = layoutId;
     }

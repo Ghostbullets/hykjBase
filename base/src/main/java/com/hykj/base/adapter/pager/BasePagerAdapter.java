@@ -1,6 +1,7 @@
 package com.hykj.base.adapter.pager;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
@@ -20,20 +21,21 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
     protected View mCurrentView;
     protected Context mContext;
     protected List<T> mDatas;
-    private final int mLayoutId;
+    private final @LayoutRes
+    int mLayoutId;
     private OnItemClickListener mListener;
     private OnItemLongClickListener onItemLongClickListener;
     private LinkedList<View> mViews = new LinkedList<>();//回收利用View
     private boolean isRecycle = true;//是否回收利用View
     private int mChildCount;
 
-    public BasePagerAdapter(Context context, List<T> datas, int layoutId) {
+    public BasePagerAdapter(Context context, List<T> datas, @LayoutRes int layoutId) {
         this.mContext = context;
         this.mDatas = datas == null ? new ArrayList<T>() : datas;
         this.mLayoutId = layoutId;
     }
 
-    public BasePagerAdapter(Context context, List<T> datas, int layoutId, boolean isRecycle) {
+    public BasePagerAdapter(Context context, List<T> datas, @LayoutRes int layoutId, boolean isRecycle) {
         this.mContext = context;
         this.mDatas = datas == null ? new ArrayList<T>() : datas;
         this.mLayoutId = layoutId;

@@ -3,6 +3,7 @@ package com.hykj.base.adapter.pager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.LayoutRes;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ public class ViewHolder {
     private View mConvertView;
     private SparseArray<View> mViews;
 
-    public ViewHolder(Context context, int layoutId, int position, final BasePagerAdapter adapter, final BasePagerAdapter.OnItemClickListener listener, final BasePagerAdapter.OnItemLongClickListener onItemLongClickListener) {
+    public ViewHolder(Context context, @LayoutRes int layoutId, int position, final BasePagerAdapter adapter, final BasePagerAdapter.OnItemClickListener listener, final BasePagerAdapter.OnItemLongClickListener onItemLongClickListener) {
         this.mPosition = position;
         this.mViews = new SparseArray<>();
         this.mConvertView = LayoutInflater.from(context).inflate(layoutId, null);
