@@ -6,11 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import com.hykj.base.dialog.ProgressBarDialog;

@@ -15,16 +15,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntDef;
-import android.support.v4.app.Fragment;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntDef;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
 import com.hykj.base.utils.ContextKeep;
-import com.hykj.base.utils.DisplayUtils;
 import com.hykj.base.utils.storage.FileUtil;
 
 import java.io.ByteArrayOutputStream;

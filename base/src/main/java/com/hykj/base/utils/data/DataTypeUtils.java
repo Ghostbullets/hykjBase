@@ -1,6 +1,6 @@
 package com.hykj.base.utils.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * created by cjf

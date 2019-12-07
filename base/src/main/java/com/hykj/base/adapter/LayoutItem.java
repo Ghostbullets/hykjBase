@@ -1,6 +1,6 @@
 package com.hykj.base.adapter;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 
 public class LayoutItem {
     private int type;

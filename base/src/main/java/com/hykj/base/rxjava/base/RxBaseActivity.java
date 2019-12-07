@@ -1,15 +1,16 @@
 package com.hykj.base.rxjava.base;
 
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
 
 import com.hykj.base.base.BaseActivity;
-import com.trello.rxlifecycle2.LifecycleProvider;
-import com.trello.rxlifecycle2.LifecycleTransformer;
-import com.trello.rxlifecycle2.RxLifecycle;
-import com.trello.rxlifecycle2.android.ActivityEvent;
-import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
+import com.trello.rxlifecycle3.LifecycleProvider;
+import com.trello.rxlifecycle3.LifecycleTransformer;
+import com.trello.rxlifecycle3.RxLifecycle;
+import com.trello.rxlifecycle3.android.ActivityEvent;
+import com.trello.rxlifecycle3.android.RxLifecycleAndroid;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;

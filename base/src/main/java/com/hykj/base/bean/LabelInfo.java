@@ -1,7 +1,7 @@
 package com.hykj.base.bean;
 
-import android.support.annotation.DrawableRes;
-import android.support.v4.app.Fragment;
+import androidx.annotation.DrawableRes;
+import androidx.fragment.app.Fragment;
 
 /**
  * 标签类

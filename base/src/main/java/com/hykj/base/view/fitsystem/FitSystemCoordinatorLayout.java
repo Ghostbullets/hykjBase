@@ -3,11 +3,10 @@ package com.hykj.base.view.fitsystem;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.CoordinatorLayout;
+import androidx.annotation.RequiresApi;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.WindowInsets;
-import android.widget.FrameLayout;
 
 /**
  * created by cjf

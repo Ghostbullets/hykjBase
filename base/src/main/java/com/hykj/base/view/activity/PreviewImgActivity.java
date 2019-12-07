@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.content.FileProvider;
-import android.support.v4.view.ViewPager;
+import androidx.core.content.FileProvider;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,9 +24,7 @@ import com.hykj.base.utils.text.Tip;
 import com.hykj.base.view.TitleView;
 import com.hykj.base.view.ZoomImageView;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.hykj.base.utils.view;
 
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.widget.EditText;

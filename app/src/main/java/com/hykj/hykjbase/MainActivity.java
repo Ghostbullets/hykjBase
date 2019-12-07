@@ -4,11 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -19,7 +19,9 @@ import com.hykj.base.bean.UpdateTransInfo;
 import com.hykj.base.dialog.UpdateVersionDialogFragment;
 import com.hykj.base.listener.OnConfirmClickListener;
 import com.hykj.base.listener.SingleOnClickListener;
+import com.hykj.base.permission.RxPermissions;
 import com.hykj.base.service.UpdateService;
+import com.hykj.base.utils.DateUtils;
 import com.hykj.base.utils.DisplayUtils;
 import com.hykj.base.utils.IntentUtils;
 import com.hykj.base.utils.bitmap.BitmapUtils;
@@ -27,7 +29,6 @@ import com.hykj.base.utils.storage.FileUtil;
 import com.hykj.base.utils.view.DividerGridSpacingItemDecoration;
 import com.hykj.base.view.activity.PickerImageActivity;
 import com.hykj.base.view.activity.PreviewImgActivity;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,10 +51,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.tv_picker).setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {
-            /*    String outPath = FileUtil.getCacheFilePath(DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + ".png", FileUtil.FileType.IMG);
+                String outPath = FileUtil.getCacheFilePath(DateUtils.getFormatDate(null, DateUtils.DateFormatType.DF_NORMAL) + ".png", FileUtil.FileType.IMG);
                 PickerImageActivity.start(MainActivity.this, REQ_PHOTO, outPath, false);
-*/
-                new RxPermissions(MainActivity.this)
+               /* new RxPermissions(MainActivity.this)
                         .request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                         .subscribe(new Consumer<Boolean>() {
                             @Override
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                                     PreviewImgActivity.start(MainActivity.this, list, 0, true, true);
                                 }
                             }
-                        });
+                        });*/
             }
         });
         for (int i = 0; i < 97; i++) {

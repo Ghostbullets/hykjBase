@@ -1,7 +1,7 @@
 package com.hykj.base.bean;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
 import com.hykj.base.R;
 

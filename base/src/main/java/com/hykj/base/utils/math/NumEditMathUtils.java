@@ -1,6 +1,6 @@
 package com.hykj.base.utils.math;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;

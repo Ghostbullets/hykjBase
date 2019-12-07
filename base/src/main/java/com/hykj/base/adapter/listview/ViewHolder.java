@@ -2,8 +2,8 @@ package com.hykj.base.adapter.listview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;

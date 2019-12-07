@@ -1,6 +1,6 @@
 package com.hykj.base.listener;
 
-import android.support.design.widget.TabLayout;
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * created by cjf

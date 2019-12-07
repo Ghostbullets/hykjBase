@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    
+
     repositories {
         maven { url 'https://jitpack.io' }
         google()
@@ -21,6 +21,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
         google()
         jcenter()
+        maven { url 'https://raw.githubusercontent.com/Ghostbullets/MavenTest/master' }
     }
 }
 
@@ -36,15 +37,15 @@ ext {
     versionCode = 1
     versionName = "1"
 
-    supportLibraryVersion = '28.0.0'
+    supportLibraryVersion = '1.0.0'
     constraintLayoutVersion = '1.1.3'
 
     var = [
-            V7GridLayout         : "com.android.support:gridlayout-v7:$supportLibraryVersion",
-            SupportV7            : "com.android.support:appcompat-v7:$supportLibraryVersion",
-            SupportV4            : "com.android.support:support-v4:$supportLibraryVersion",
-            SupportRecyclerViewV7: "com.android.support:recyclerview-v7:$supportLibraryVersion",
-            SupportDesign        : "com.android.support:design:$supportLibraryVersion",
-            ConstraintLayout      : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+            V7GridLayout         : "androidx.gridlayout:gridlayout:$supportLibraryVersion",
+            SupportV7            : "androidx.appcompat:appcompat:$supportLibraryVersion",
+            SupportV4            : "androidx.legacy:legacy-support-v4:$supportLibraryVersion",
+            SupportRecyclerViewV7: "androidx.recyclerview:recyclerview:$supportLibraryVersion",
+            SupportDesign        : "com.google.android.material:material:$supportLibraryVersion",
+            ConstraintLayout     : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     ]
 }

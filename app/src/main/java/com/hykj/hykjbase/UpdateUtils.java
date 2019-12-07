@@ -7,16 +7,17 @@ import com.hykj.base.base.BaseActivity;
 import com.hykj.base.bean.AppVersionInfo;
 import com.hykj.base.bean.UpdateTransInfo;
 import com.hykj.base.dialog.UpdateVersionDialogFragment;
+import com.hykj.base.dialog.UpdatingDialogFragment;
 import com.hykj.base.listener.OnSelectClickListener;
+import com.hykj.base.permission.RxPermissions;
 import com.hykj.base.service.UpdateService;
 import com.hykj.base.utils.IntentUtils;
 import com.hykj.base.utils.storage.FileUtil;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 
 import java.io.File;
 
-import io.reactivex.functions.Consumer;
+//import io.reactivex.functions.Consumer;
 
 /**
  * 更新工具类
@@ -29,7 +30,7 @@ public class UpdateUtils {
      * @param activity 活动
      */
     public static void updateAPP(final BaseActivity activity) {
-      /*  //显示版本升级弹窗
+        /*//显示版本升级弹窗
         final String saveName = AppUtils.getAppName(activity) + "AGT9601v1.0.0" + ".apk";
         final String savePath = FileUtil.getFileTypePath(FileUtil.FileType.FILE);
         final boolean isForceUpdate = true;
@@ -70,8 +71,8 @@ public class UpdateUtils {
                         }
                     }
                 })
-                .show(activity.getSupportFragmentManager(), "UpdateVersionDialogFragment");*/
-      /*  CommandReq req = new CommandReq("update");
+                .show(activity.getSupportFragmentManager(), "UpdateVersionDialogFragment");
+        CommandReq req = new CommandReq("update");
         RxJavaHelper.getInstance().toSubscribe(req.init().getLaterAppVersion(req.getParams()), true, activity, ActivityEvent.DESTROY, new MyProgressSubscribe<AppVersionJSON>(activity) {
             @Override
             protected void onResponse(final AppVersionJSON item) {

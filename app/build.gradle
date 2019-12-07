@@ -8,12 +8,38 @@ android {
         targetSdkVersion rootProject.targetSdkVersion
         versionCode rootProject.versionCode
         versionName rootProject.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+configurations.all {
+    resolutionStrategy {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'androidx.core') {
+                details.useVersion "1.1.0"
+            }
+            /* if (details.requested.group == 'androidx.lifecycle') {
+                 details.useVersion "2.0.0"
+             }*/
+            /* if (details.requested.group == 'androidx.versionedparcelable') {
+                 details.useVersion "1.0.0"
+             }*/
+            if (details.requested.group == 'androidx.fragment') {
+                details.useVersion "1.1.0"
+            }
+            if (details.requested.group == 'androidx.appcompat') {
+                details.useVersion "1.1.0"
+            }
+            if (details.requested.group == 'io.reactivex.rxjava2') {
+                if (details.requested.name.contains('rxandroid')) {
+                    details.useVersion "2.1.1"
+                }
+            }
         }
     }
 }
@@ -26,8 +52,9 @@ dependencies {
     implementation var.SupportDesign
     implementation var.ConstraintLayout
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation project(":base")
+    //implementation 'com.Ghostbullets.base:base-androidx:0.1.0'
 }

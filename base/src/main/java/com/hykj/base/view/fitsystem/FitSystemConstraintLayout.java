@@ -3,8 +3,8 @@ package com.hykj.base.view.fitsystem;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.constraint.ConstraintLayout;
+import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.WindowInsets;
 

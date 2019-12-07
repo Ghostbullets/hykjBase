@@ -3,7 +3,7 @@ package com.hykj.base.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 

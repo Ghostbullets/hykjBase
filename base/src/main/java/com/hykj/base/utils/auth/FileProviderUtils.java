@@ -9,9 +9,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.annotation.StringDef;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.StringDef;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.FileProvider;
 import android.widget.Toast;
 
 import java.io.File;

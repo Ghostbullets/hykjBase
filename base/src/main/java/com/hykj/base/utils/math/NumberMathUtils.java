@@ -1,7 +1,7 @@
 package com.hykj.base.utils.math;
 
-import android.support.annotation.IntDef;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.IntDef;
+import androidx.fragment.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
 
