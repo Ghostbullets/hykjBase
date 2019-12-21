@@ -373,6 +373,34 @@ public class BaseWebViewActivity extends TitleActivity {
             return this;
         }
 
+        public String getUrl() {
+            return url;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public boolean isPost() {
+            return isPost;
+        }
+
+        public String getPostJson() {
+            return postJson;
+        }
+
+        public boolean isShowProgress() {
+            return isShowProgress;
+        }
+
+        public int getProgressDrawable() {
+            return progressDrawable;
+        }
+
+        public int getProgressHeight() {
+            return progressHeight;
+        }
+
         public void build(Context context) {
             build(context, BaseWebViewActivity.class);
         }
