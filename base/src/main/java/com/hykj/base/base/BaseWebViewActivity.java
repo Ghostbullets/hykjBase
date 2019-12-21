@@ -382,10 +382,10 @@ public class BaseWebViewActivity extends TitleActivity {
             return this;
         }
 
-        public Builder addParam(String... params) {
+        public Builder addParam(Object... params) {
             if (params != null && params.length % 2 == 0) {
                 for (int i = 0; i < params.length; i += 2) {
-                    extraParams.put(params[i], params[i + 1]);
+                    extraParams.put(params[i].toString(), params[i + 1]);
                 }
             }
             return this;
