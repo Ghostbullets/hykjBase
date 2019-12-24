@@ -36,6 +36,8 @@ import com.hykj.base.view.TitleView;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * WebView基类,带post请求讲解
@@ -342,10 +344,12 @@ public class BaseWebViewActivity extends TitleActivity {
         private @DrawableRes
         int progressDrawable = R.drawable.progress_drawable_base_web_view;//ProgressBar的progressDrawable属性
         private int progressHeight = 2;//进度条高度,单位dp
+        private Map<String, Object> extraParams;//附加字段
 
         public Builder(String url, String title) {
             this.url = url;
             this.title = title;
+            extraParams = new LinkedHashMap<>();
         }
 
         public Builder isPost(boolean isPost) {
@@ -372,6 +376,68 @@ public class BaseWebViewActivity extends TitleActivity {
             if (progressHeight >= 0)
                 this.progressHeight = progressHeight;
             return this;
+        }
+
+        public Builder addParam(String key, Object value) {
+            extraParams.put(key, value);
+            return this;
+        }
+
+        public Builder addParam(Object... params) {
+            if (params != null && params.length % 2 == 0) {
+                for (int i = 0; i < params.length; i += 2) {
+                    extraParams.put(params[i].toString(), params[i + 1]);
+                }
+            }
+            return this;
+        }
+
+        public Builder addParams(Map<String, Object> params) {
+            for (Map.Entry<String, Object> param : params.entrySet()) {
+                extraParams.put(param.getKey(), param.getValue());
+            }
+            return this;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public boolean isPost() {
+            return isPost;
+        }
+
+        public String getPostJson() {
+            return postJson;
+        }
+
+        public boolean isShowProgress() {
+            return isShowProgress;
+        }
+
+        public int getProgressDrawable() {
+            return progressDrawable;
+        }
+
+        public int getProgressHeight() {
+            return progressHeight;
+        }
+
+        public Map<String, Object> getExtraParams() {
+            return extraParams;
+        }
+
+        public Object getParam(String key) {
+            for (Map.Entry<String, Object> param : extraParams.entrySet()) {
+                if (param.getKey().equals(key)) {
+                    return param.getValue();
+                }
+            }
+            return null;
         }
 
         public void build(Context context) {

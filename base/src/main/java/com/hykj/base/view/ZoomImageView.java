@@ -16,6 +16,11 @@ import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 用于ViewPager+图片预览
  */
@@ -40,8 +45,7 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
     //是否在移动
     private boolean isCanDrag = false;
 
-    //触摸点个数，以及触摸坐标
-    private int lastPointerCount = 0;
+    //触摸坐标
     private float mLastX;
     private float mLastY;
 
@@ -49,18 +53,22 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
     private OnClickListener mClickListener;
     private OnLongClickListener mLongClk;
 
+    private ScheduledExecutorService mExecutors = Executors.newSingleThreadScheduledExecutor();//单线程管理器
+    private ScheduledFuture mFuture;//计划未来
+
 
     public ZoomImageView(Context context) {
         this(context, null);
     }
 
     public ZoomImageView(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public ZoomImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         super.setScaleType(ScaleType.MATRIX);//允许矩阵
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         setOnTouchListener(this);
         mGestureDetector = new GestureDetector(context, onGestureListener);
@@ -103,6 +111,12 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
                 mLongClk.onLongClick(ZoomImageView.this);
             }
         }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {//快速滑动事件
+            flingBy(velocityX/2, velocityY/2);
+            return true;
+        }
     };
 
     private Runnable clickRunnable = new Runnable() {
@@ -113,6 +127,35 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
             }
         }
     };
+
+    /**
+     * 慢性滚动的实现
+     *
+     * @param velocityY 纵向滚动速度
+     */
+    private void flingBy(float velocityX, float velocityY) {
+        if (!isParentInterceptTouchEvent(velocityX, velocityY)) {
+            cancelFuture();
+            mFuture = mExecutors.scheduleWithFixedDelay(new InertialTimerTask(this, velocityX, velocityY), 0, 5, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * 取消任务的执行，如果正在执行，如果传入true，则打断该任务
+     */
+    public void cancelFuture() {
+        if (mFuture != null && !mFuture.isCancelled()) {
+            mFuture.cancel(true);
+            mFuture = null;
+        }
+    }
+
+    //平滑滚动
+    public void smoothScroll(float dx, float dy) {
+        mScaleMatrix.postTranslate(dx, dy);
+        checkExceedBorder();
+        setImageMatrix(mScaleMatrix);
+    }
 
     /**
      * 手势缩放
@@ -186,26 +229,16 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
             return true;
 
         //获取触摸点坐标
-        int pointerCount = event.getPointerCount();
-        float x = 0;
-        float y = 0;
-        for (int i = 0; i < pointerCount; i++) {
-            x += event.getX(i);
-            y += event.getY(i);
-        }
-        x = x / pointerCount;
-        y = y / pointerCount;
-
-        if (pointerCount != lastPointerCount) {
-            isCanDrag = false;
-            mLastX = x;
-            mLastY = y;
-            lastPointerCount = pointerCount;
-        }
+        float x = event.getX();
+        float y = event.getY();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                cancelFuture();
                 isChildrenInterceptTouchEvent();//是否让父类不拦截事件
+                isCanDrag = false;
+                mLastX = x;
+                mLastY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
                 isChildrenInterceptTouchEvent();
@@ -217,7 +250,7 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
                 //在移动
                 if (isCanDrag) {
                     if (getDrawable() != null) {
-                        if (!isParentInterceptTouchEvent(dx,dy)) {//父类不拦截事件
+                        if (!isParentInterceptTouchEvent(dx, dy)) {//父类不拦截事件
                             RectF rectF = getMatrixRectF();
                             //当图片宽或者高小于屏幕宽或者高
                             if (rectF.width() < getWidth()) {
@@ -237,7 +270,6 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                lastPointerCount = 0;
                 break;
         }
         return true;
@@ -262,7 +294,8 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
         if (dw > width && dh <= height) {
             scale = width * 1.0f / dw;
         } else if (dh > height && dw <= width) {
-            scale = height * 1.0f / dh;
+            //scale = height * 1.0f / dh;
+            scale = width * 1.0f / dw;
         } else if (dw > width && dh > height) {
             scale = Math.min(width * 1.0f / dw, height * 1.0f / dh);
         } else {//宽高均小于屏幕宽高,则放大到最小倍数
@@ -334,10 +367,16 @@ public class ZoomImageView extends AppCompatImageView implements View.OnTouchLis
     /**
      * @return 父类是否拦截子类事件
      */
-    private boolean isParentInterceptTouchEvent(float dx,float dy) {
+    private boolean isParentInterceptTouchEvent(float dx, float dy) {
         RectF rectF = getMatrixRectF();
+        //解决长图情况下，图片宽度=控件宽度时，无法上下滑动
+        if (Math.abs(dy) > Math.abs(dx)) {
+            if (!((rectF.top == 0 && dy > 0) || (rectF.bottom == getHeight() && dy < 0) || rectF.height() < getHeight())) {
+                return false;
+            }
+        }
         if ((rectF.left == 0 && dx > 0) || (rectF.right == getWidth() && dx < 0) || rectF.width() < getWidth()
-                /*|| (rectF.top == 0 && dy > 0) || (rectF.bottom == getWidth() && dy < 0) || rectF.height() < getHeight()*/) {
+            /*|| (rectF.top == 0 && dy > 0) || (rectF.bottom == getWidth() && dy < 0) || rectF.height() < getHeight()*/) {
             ViewParent parent = getParent();
             while (parent != null && !(parent instanceof ViewPager)) {
                 parent = parent.getParent();
