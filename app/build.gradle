@@ -38,6 +38,8 @@ configurations.all {
             if (details.requested.group == 'io.reactivex.rxjava2') {
                 if (details.requested.name.contains('rxandroid')) {
                     details.useVersion "2.1.1"
+                } else if (details.requested.name.contains('rxjava')) {
+                    details.useVersion "2.2.12"
                 }
             }
         }
