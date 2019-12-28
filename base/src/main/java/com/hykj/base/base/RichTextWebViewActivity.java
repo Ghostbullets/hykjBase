@@ -22,10 +22,10 @@ import com.hykj.base.view.TitleView;
  * 富文本基础页面
  */
 public class RichTextWebViewActivity extends TitleActivity {
-    private static final String INFO = "richTextInfo";
-    private RichTextInfo info;
-    private WebView mWebView;
-    private WebViewUtils webViewUtils;
+    protected static final String INFO = "richTextInfo";
+    protected RichTextInfo info;
+    protected WebView mWebView;
+    protected WebViewUtils webViewUtils;
 
     @Override
     protected int getLayoutId() {

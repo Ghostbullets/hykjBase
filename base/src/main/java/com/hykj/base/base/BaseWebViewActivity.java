@@ -12,18 +12,20 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
+import androidx.annotation.DrawableRes;
+
+import com.google.gson.Gson;
 import com.hykj.base.R;
 import com.hykj.base.listener.SingleOnClickListener;
 import com.hykj.base.utils.DisplayUtils;
@@ -34,6 +36,8 @@ import com.hykj.base.view.TitleView;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * WebView基类,带post请求讲解
@@ -42,20 +46,16 @@ import java.util.Iterator;
  * https://blog.csdn.net/carson_ho/article/details/64904691/
  */
 public class BaseWebViewActivity extends TitleActivity {
-    private static final String URL = "url";
-    private static final String TITLE = "title";
-    private static final String IS_POST = "isPost";
-    private static final String JSON = "json";
+    protected static final String PARAMETER = "Parameter";
 
-    private static final String JS = "js";
-    private static final String WEB_VIEW = "webView";
+    protected static final String JS = "js";
+    protected static final String WEB_VIEW = "webView";
 
-    private boolean isPost;
-    private String json;
-    private String loadUrl;
-    private WebView mWebView;
-    private WebViewUtils webViewUtils;
-    private boolean isFinished;
+    protected ProgressBar progressBar;
+    protected WebView mWebView;
+    protected WebViewUtils webViewUtils;
+    protected boolean isFinished;
+    protected Builder parameter;
 
     @Override
     protected int getLayoutId() {
@@ -65,23 +65,28 @@ public class BaseWebViewActivity extends TitleActivity {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void init(TitleView title) {
-        title.setTitle(getIntent().getStringExtra(TITLE));
-        loadUrl = getIntent().getStringExtra(URL);
-        isPost = getIntent().getBooleanExtra(IS_POST, false);
-        json = getIntent().getStringExtra(JSON);
-        if (TextUtils.isEmpty(loadUrl)) {
+        String json = getIntent().getStringExtra(PARAMETER);
+        if (TextUtils.isEmpty(json)) {
             finish();
             return;
         }
+        parameter = new Gson().fromJson(json, Builder.class);
+
+        title.setTitle(parameter.title);
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.getLayoutParams().height = DisplayUtils.size2px(TypedValue.COMPLEX_UNIT_DIP, parameter.progressHeight);
+        progressBar.setProgressDrawable(getResources().getDrawable(parameter.progressDrawable));
+        progressBar.setVisibility(parameter.isShowProgress ? View.VISIBLE : View.GONE);
 
         mWebView = findViewById(R.id.wv_content);
         webViewUtils = new WebViewUtils(mWebView);
         mWebView.setWebViewClient(webViewClient);
         mWebView.setWebChromeClient(webChromeClient);
+
         //通过addJavascriptInterface()将Java对象映射到JS对象，参数1：Javascript对象名，参数2：Java对象名
         //mWebView.addJavascriptInterface(new AndroidToJs(), "test");//AndroidToJS类对象映射到js的test对象
         // 载入JS代码,格式规定为:file:///android_asset/文件名.html
-        mWebView.loadUrl(loadUrl);
+        mWebView.loadUrl(parameter.url);
     }
 
     /**
@@ -94,13 +99,13 @@ public class BaseWebViewActivity extends TitleActivity {
      */
     private WebResourceResponse postUrl(String url) throws Exception {
         WebResourceResponse resp = null;
-        if (url.contains(loadUrl)) {
+        if (url.contains(parameter.url)) {
             HttpURLConnection coon = (HttpURLConnection) new URL(url).openConnection();
             coon.setRequestMethod("POST");
             coon.setRequestProperty("Content-type", "application/json");
            /* String token = "fgkdgkdkdg";
             String request = "{\"token\":\"" + token + "\"}";*/
-            coon.getOutputStream().write(json.getBytes());
+            coon.getOutputStream().write(parameter.postJson.getBytes());
             resp = new WebResourceResponse("text/plain", coon.getHeaderField("encoding"), coon.getInputStream());
         }
         return resp;
@@ -119,7 +124,7 @@ public class BaseWebViewActivity extends TitleActivity {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            if (isPost) {
+            if (parameter.isPost) {
                 try {
                     return postUrl(url);
                 } catch (Exception e) {
@@ -131,7 +136,7 @@ public class BaseWebViewActivity extends TitleActivity {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-            if (isPost) {
+            if (parameter.isPost) {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         return postUrl(request.getUrl().toString());
@@ -171,7 +176,6 @@ public class BaseWebViewActivity extends TitleActivity {
                     String value = url.getQueryParameter(key);
                     builder.append(String.format("%s=%s", key, value));
                 }
-                Tip.showShort(builder.toString());
                 String result = "js调用了Android的方法成功啦";
                 mWebView.loadUrl("javascript:returnResult(" + result + ")");//JS获取Android方法的返回值
             }
@@ -217,7 +221,6 @@ public class BaseWebViewActivity extends TitleActivity {
                         String value = uri.getQueryParameter(key);
                         builder.append(String.format("%s=%s", key, value));
                     }
-                    Tip.showShort(builder.toString());
                     result.confirm("js调用了Android的方法成功啦");
 
                 }
@@ -232,6 +235,16 @@ public class BaseWebViewActivity extends TitleActivity {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100)
                 isFinished = true;
+            if (parameter.isShowProgress) {
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    if (progressBar.getVisibility() == View.GONE) {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                    progressBar.setProgress(newProgress);
+                }
+            }
         }
     };
 
@@ -251,7 +264,7 @@ public class BaseWebViewActivity extends TitleActivity {
         imageView.setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {
-                mWebView.loadUrl(loadUrl);//点击右上角刷新页面
+                mWebView.loadUrl(parameter.url);//点击右上角刷新页面
                 //Android通过WebView调用 JS 代码
                /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//该方法4.4版本可用
                     mWebView.evaluateJavascript("javascript:callJS()", valueCallback);
@@ -313,12 +326,127 @@ public class BaseWebViewActivity extends TitleActivity {
      * @param cls     继承BaseWebViewActivity类的Activity
      */
     public static void start(Context context, String url, String title, boolean isPost, String json, Class<? extends BaseWebViewActivity> cls) {
+        new Builder(url, title).isPost(isPost).postJson(json).build(context, cls);
+    }
+
+    private static void start(Context context, Class<? extends BaseWebViewActivity> cls, Builder parameter) {
         Intent intent = new Intent(context, cls);
-        intent.putExtra(URL, url);
-        intent.putExtra(TITLE, title);
-        intent.putExtra(IS_POST, isPost);
-        intent.putExtra(JSON, json);
+        intent.putExtra(PARAMETER, new Gson().toJson(parameter));
         context.startActivity(intent);
+    }
+
+    public static class Builder {
+        private String url;//请求的地址
+        private String title;//标题
+        private boolean isPost;//是否是post请求,这里由于Content-type格式为application/json，所以字符串需要以下格式
+        private String postJson;//post需要携带的json字符串 格式为"{"title":"啦啦啦","phone":"啦啦啦啦啦啦啦"}"
+        private boolean isShowProgress;//是否显示进度条
+        private @DrawableRes
+        int progressDrawable = R.drawable.progress_drawable_base_web_view;//ProgressBar的progressDrawable属性
+        private int progressHeight = 2;//进度条高度,单位dp
+        private Map<String, Object> extraParams;//附加字段
+
+        public Builder(String url, String title) {
+            this.url = url;
+            this.title = title;
+            extraParams = new LinkedHashMap<>();
+        }
+
+        public Builder isPost(boolean isPost) {
+            this.isPost = isPost;
+            return this;
+        }
+
+        public Builder postJson(String postJson) {
+            this.postJson = postJson;
+            return this;
+        }
+
+        public Builder isShowProgress(boolean isShowProgress) {
+            this.isShowProgress = isShowProgress;
+            return this;
+        }
+
+        public Builder progressDrawable(@DrawableRes int progressDrawable) {
+            this.progressDrawable = progressDrawable;
+            return this;
+        }
+
+        public Builder progressHeight(int progressHeight) {
+            if (progressHeight >= 0)
+                this.progressHeight = progressHeight;
+            return this;
+        }
+
+        public Builder addParam(String key, Object value) {
+            extraParams.put(key, value);
+            return this;
+        }
+
+        public Builder addParam(Object... params) {
+            if (params != null && params.length % 2 == 0) {
+                for (int i = 0; i < params.length; i += 2) {
+                    extraParams.put(params[i].toString(), params[i + 1]);
+                }
+            }
+            return this;
+        }
+
+        public Builder addParams(Map<String, Object> params) {
+            for (Map.Entry<String, Object> param : params.entrySet()) {
+                extraParams.put(param.getKey(), param.getValue());
+            }
+            return this;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public boolean isPost() {
+            return isPost;
+        }
+
+        public String getPostJson() {
+            return postJson;
+        }
+
+        public boolean isShowProgress() {
+            return isShowProgress;
+        }
+
+        public int getProgressDrawable() {
+            return progressDrawable;
+        }
+
+        public int getProgressHeight() {
+            return progressHeight;
+        }
+
+        public Map<String, Object> getExtraParams() {
+            return extraParams;
+        }
+
+        public Object getParam(String key) {
+            for (Map.Entry<String, Object> param : extraParams.entrySet()) {
+                if (param.getKey().equals(key)) {
+                    return param.getValue();
+                }
+            }
+            return null;
+        }
+
+        public void build(Context context) {
+            build(context, BaseWebViewActivity.class);
+        }
+
+        public void build(Context context, Class<? extends BaseWebViewActivity> cls) {
+            BaseWebViewActivity.start(context, cls, this);
+        }
     }
 
     //WebSettings   下面三个最常用，基本都需要设置
