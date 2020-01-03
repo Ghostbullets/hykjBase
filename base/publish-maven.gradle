@@ -1,6 +1,21 @@
 // 发布maven配置
 apply plugin: 'maven'
 
+task androidSourcesJar(type: Jar) {//开启则会另外打包jar包
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+
+/*task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {//开启则会另外生成文档
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}*/
+
+artifacts {
+    archives androidSourcesJar
+    //archives androidJavadocsJar
+}
+
 uploadArchives {
     repositories.mavenDeployer {
         repository(url: uri("${rootProject.projectDir}/repo")) // 配置本地仓库路径，项目根目录下的repository目录中
