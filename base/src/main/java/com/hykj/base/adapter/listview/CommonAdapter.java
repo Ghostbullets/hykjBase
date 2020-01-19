@@ -1,6 +1,7 @@
 package com.hykj.base.adapter.listview;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
         return viewHolder.getConvertView();
     }
 
-    protected abstract void convert(ViewHolder holder, T t, int position);
+    protected abstract void convert(@NonNull ViewHolder holder, @NonNull T t, int position);
 
     /**
      * 导入数据

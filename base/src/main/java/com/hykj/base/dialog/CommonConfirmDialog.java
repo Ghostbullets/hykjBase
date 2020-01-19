@@ -1,5 +1,6 @@
 package com.hykj.base.dialog;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -113,7 +114,7 @@ public class CommonConfirmDialog extends BaseDialogFragment {
     };
 
     @Override
-    public void dismiss() {
+    public void onDismiss(DialogInterface dialog) {
         if (listener != null) {
             if (isConfirmDialog) {
                 listener.onConfirm(tvConfirm);
@@ -122,6 +123,6 @@ public class CommonConfirmDialog extends BaseDialogFragment {
             }
         }
         isConfirmDialog = false;
-        super.dismiss();
+        super.onDismiss(dialog);
     }
 }
