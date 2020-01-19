@@ -50,7 +50,7 @@ public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerV
         BindData(holder, t, position, payloads);//需要传的是t对象，因为数据在t里面，而不是传position
     }
 
-    public abstract void BindData(BaseViewHolder holder, T t, int position, @NonNull List<Object> payloads);
+    public abstract void BindData(@NonNull BaseViewHolder holder,@NonNull T t, int position, @NonNull List<Object> payloads);
 
     @Override
     public int getItemCount() {

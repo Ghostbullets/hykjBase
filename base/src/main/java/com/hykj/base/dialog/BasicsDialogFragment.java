@@ -24,15 +24,6 @@ public abstract class BasicsDialogFragment extends DialogFragment {
     protected FragmentActivity mActivity;
     protected View itemView;
     protected boolean isViewCreated;
-    private Object tagEx;
-
-    public Object getTagEx() {
-        return tagEx;
-    }
-
-    public void setTagEx(Object tagEx) {
-        this.tagEx = tagEx;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
