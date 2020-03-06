@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 apply plugin: 'com.github.dcendents.android-maven'
 group="com.github.Ghostbullets"
 android {
@@ -20,6 +23,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    'src/main/res',
+                    'src/main/res/refresh'
+
+            ]
         }
     }
 
@@ -48,4 +61,8 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     //下载
     implementation 'zlc.season:rxdownload3:1.2.7'
+
+    //kotlin 开发引用包、反射包
+    implementation var.KotlinStdlib
+    implementation var.KotlinReflect
 }
