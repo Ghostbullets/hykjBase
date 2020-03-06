@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -9,6 +11,7 @@ android {
         versionCode rootProject.versionCode
         versionName rootProject.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -59,4 +62,8 @@ dependencies {
 
     implementation project(":base")
     //implementation 'com.Ghostbullets.base:base-androidx:0.1.0'
+
+    //kotlin 开发引用包、反射包
+    implementation var.KotlinStdlib
+    implementation var.KotlinReflect
 }

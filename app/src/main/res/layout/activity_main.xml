@@ -21,11 +21,20 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_content"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@android:color/white"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/layout_refresh_demo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:text="演示下拉刷新、上拉加载"
+        android:textSize="14sp" />
 </RelativeLayout>

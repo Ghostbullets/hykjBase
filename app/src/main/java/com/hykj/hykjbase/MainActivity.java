@@ -48,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ivImg = findViewById(R.id.iv_img);
+        findViewById(R.id.layout_refresh_demo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RecyclerViewDemoActivity.class));
+            }
+        });
         findViewById(R.id.tv_picker).setOnClickListener(new SingleOnClickListener() {
             @Override
             public void onClickSub(View v) {
