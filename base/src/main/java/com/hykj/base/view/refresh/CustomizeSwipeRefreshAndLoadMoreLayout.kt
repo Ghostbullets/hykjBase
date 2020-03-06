@@ -2,12 +2,7 @@ package com.hykj.base.view.refresh
 
 import android.content.Context
 import android.os.Build
-import android.support.annotation.FloatRange
-import android.support.annotation.IntDef
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
@@ -15,6 +10,12 @@ import android.view.animation.Interpolator
 import android.widget.AbsListView
 import android.widget.LinearLayout
 import android.widget.OverScroller
+import androidx.annotation.FloatRange
+import androidx.annotation.IntDef
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlin.math.abs
 
 /**

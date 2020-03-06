@@ -1,13 +1,14 @@
 package com.hykj.hykjbase
 
-import android.support.v7.app.AppCompatActivity
+
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hykj.base.adapter.recyclerview2.BaseViewHolder
 import com.hykj.base.adapter.recyclerview2.SimpleRecycleViewAdapter
 import com.hykj.base.utils.text.Tip
