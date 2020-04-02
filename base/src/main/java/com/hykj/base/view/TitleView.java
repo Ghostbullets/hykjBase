@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hykj.base.R;
@@ -23,6 +24,7 @@ import com.hykj.base.utils.DisplayUtils;
 public class TitleView extends LinearLayout {
     private BackClickListener backClickListener;
     private View content;
+    private RelativeLayout layoutTitle;
     private LinearLayout layoutLeft;
     private LinearLayout layoutRight;
     private LinearLayout layoutMiddle;
@@ -37,12 +39,13 @@ public class TitleView extends LinearLayout {
     }
 
     public TitleView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public TitleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         content = LayoutInflater.from(context).inflate(R.layout.layout_title_view, this, true);
+        layoutTitle = findViewById(R.id.layout_title);
         layoutLeft = findViewById(R.id.layout_title_left);
         layoutMiddle = findViewById(R.id.layout_title_middle);
         layoutRight = findViewById(R.id.layout_title_right);
@@ -77,6 +80,10 @@ public class TitleView extends LinearLayout {
 
     public void setTitle(CharSequence title) {
         tvTitle.setText(title);
+    }
+
+    public RelativeLayout getLayoutTitle() {
+        return layoutTitle;
     }
 
     public LinearLayout getLayoutLeft() {
