@@ -4,6 +4,8 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class DateUtils {
     private static SimpleDateFormat df_year_month = new SimpleDateFormat("yyyy-MM", Locale.US);
     private static SimpleDateFormat df_year_day_time = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({DateFormatType.DF_NORMAL, DateFormatType.DF_TIME, DateFormatType.DF_DAY_TIME,
             DateFormatType.DF_YEAR_DAY, DateFormatType.DF_YEAR_MONTH, DateFormatType.DF_YEAR_DAY_TIME})
     public @interface DateFormatType {
@@ -406,6 +409,7 @@ public class DateUtils {
         return list;
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({DistanceDateType.YEAR, DistanceDateType.YEAR_MONTH, DistanceDateType.YEAR_MONTH_DAY})
     public @interface DistanceDateType {//获取一段时间的字符串时间组  0按年份   1按年月   按年月日
         int YEAR = 0;

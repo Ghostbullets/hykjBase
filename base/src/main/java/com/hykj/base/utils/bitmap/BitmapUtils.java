@@ -28,6 +28,8 @@ import com.hykj.base.utils.storage.FileUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
@@ -294,6 +296,7 @@ public class BitmapUtils {
         return new BitmapDrawable(ContextKeep.getContext().getResources(), scaleBitmap);
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({ZoomType.ZOOM, ZoomType.SHRINK, ZoomType.MAGNIFY})
     public @interface ZoomType {//缩放类型，缩放、缩小、放大
         int ZOOM = 0;

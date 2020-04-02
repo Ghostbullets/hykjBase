@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 
 /**
@@ -419,6 +421,7 @@ public class FileUtil {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @StringDef({FileType.IMG, FileType.AUDIO, FileType.VIDEO, FileType.FILE})
     public @interface FileType {
         String IMG = "IMG";

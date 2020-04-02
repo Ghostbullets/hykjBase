@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class FileProviderUtils {
         fragment.startActivityForResult(intent, requestCode);
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @StringDef({ImageType.JPEG, ImageType.PNG, ImageType.ALL})
     public @interface ImageType {
         String JPEG = "image/jpeg";

@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.hykj.base.listener.SingleOnClickListener;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * 数学加减器
  * 请在frgament的onResume中使用该方法，不然会出现textWatcher多次调用
@@ -165,6 +168,7 @@ public class NumEditMathUtils {
         void onNumChange(int number);
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({NumChangeStatus.SUB, NumChangeStatus.ADD})
     public @interface NumChangeStatus {
         int SUB = 0;

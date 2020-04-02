@@ -4,6 +4,8 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import android.widget.TextView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Locale;
 
 /**
@@ -91,6 +93,7 @@ public class ApplyCountDownTimer extends CountDownTimer {
         return time;
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({TimeType.DAY, TimeType.HOUR, TimeType.MINUTE})
     public @interface TimeType {//显示数据类型
         int DAY = 0;

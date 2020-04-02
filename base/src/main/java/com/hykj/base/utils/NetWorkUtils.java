@@ -7,6 +7,9 @@ import androidx.annotation.IntDef;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * created by cjf
  * on:2019/2/23 11:05
@@ -98,7 +101,7 @@ public class NetWorkUtils {
         return strNetworkType;
     }
 
-
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({NetWorkConnectType.NETWORK, NetWorkConnectType.WIFI, NetWorkConnectType.MOBILE})
     public @interface NetWorkConnectType {//判断是否连接了某个网络类型
         int NETWORK = 0;

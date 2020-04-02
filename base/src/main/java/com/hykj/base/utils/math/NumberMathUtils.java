@@ -8,6 +8,9 @@ import android.widget.TextView;
 import com.hykj.base.dialog.EditNumberDialogFragment;
 import com.hykj.base.listener.SingleOnClickListener;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 
 /**
  * 数学加减器
@@ -117,6 +120,7 @@ public class NumberMathUtils {
         void onNumChange(int number);
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({NumChangeStatus.SUB, NumChangeStatus.ADD})
     public @interface NumChangeStatus {
         int SUB = 0;

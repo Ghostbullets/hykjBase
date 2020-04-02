@@ -25,6 +25,8 @@ import com.hykj.base.utils.auth.FileProviderUtils;
 import com.hykj.base.utils.storage.FileUtil;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -234,6 +236,7 @@ public class PickerImageActivity extends BaseActivity {
         fragment.startActivityForResult(intent, requestCode);
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({PhotoType.FROM_CAMERA, PhotoType.FROM_LOCAL})
     public @interface PhotoType {//选择照片类型  0 去拍照，1从本地相册中选择
         int FROM_CAMERA = 0;

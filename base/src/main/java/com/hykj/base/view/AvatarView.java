@@ -22,6 +22,9 @@ import android.util.AttributeSet;
 
 import com.hykj.base.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * 矩形、圆形、椭圆控件
  */
@@ -217,6 +220,7 @@ public class AvatarView extends AppCompatImageView {
         super.setScaleType(scaleType);
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({ShapeType.CIRCLE, ShapeType.ROUND, ShapeType.CORNER})
     public @interface ShapeType {
         int CIRCLE = 0;
