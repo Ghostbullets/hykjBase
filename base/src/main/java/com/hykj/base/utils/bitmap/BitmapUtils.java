@@ -48,7 +48,7 @@ public class BitmapUtils {
         if ((refWidth > 0 && refHeight > 0) && (outWidth > refWidth || outHeight > refHeight)) {//获取的图片高度或者宽度大于你想要的高宽2倍以上才需要缩放
             final int width = outWidth / 2;
             final int height = outHeight / 2;
-            while ((width / SampleSize) > refWidth && (height / SampleSize) > height) {
+            while ((width / SampleSize) > refWidth && (height / SampleSize) > refHeight) {
                 SampleSize *= 2;
             }
         }
